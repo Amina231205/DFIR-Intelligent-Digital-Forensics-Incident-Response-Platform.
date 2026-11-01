@@ -7,7 +7,7 @@ Takes a folder of collector evidence (JSON) and produces structured, explainable
 Evidence → Validation → Normalization → Timeline → Detection → IOCs → MITRE → Investigation
 ```
 
-Scope: **analysis only.** The Windows collector/preservation module belongs to a teammate; the contract between us is [`docs/EVIDENCE_CONTRACT.md`](docs/EVIDENCE_CONTRACT.md).
+Scope: **analysis only.** The Windows Evidence Collector and preservation module are maintained separately and are not included in this repository. The expected evidence format is described in [`docs/EVIDENCE_CONTRACT.md`](docs/EVIDENCE_CONTRACT.md); compatibility with the separate collector has not been verified here.
 
 ## Quick start
 
@@ -30,18 +30,23 @@ python -m security.mitre --list            # supported mappings, omissions, data
 
 ```text
 sentinel-dfir-analysis/
-├── docs/EVIDENCE_CONTRACT.md      Collector → Analysis contract (share with teammate)
+├── docs/EVIDENCE_CONTRACT.md      Expected Collector → Analysis evidence contract
 ├── docs/NORMALIZATION.md          Normalization rules, event mapping, details keys
 ├── docs/TIMELINE.md               Timeline schema, summaries, filter semantics
 ├── docs/DETECTION.md              Rules, defaults, severity/confidence, IP policy, correlation
 ├── docs/IOC.md                    IOC scope, per-type rules, schema, limitations
+├── docs/ATTACK_MAPPING.md         Curated ATT&CK mapping scope and limitations
+├── docs/PHASE7_VERIFICATION.md    Phase 7 verification notes
+├── docs/PHASE8_INVESTIGATION.md   Investigation assembly and interpretation limits
+├── docs/PHASE9_STORAGE.md         Local SQLite persistence service
+├── docs/PHASE8_9_COMPLETION_REPORT.md  Phase 8–9 implementation notes
 ├── examples/detection_synthetic_demo.json   EXPLICIT opt-in: documentation IPs count as external
-├── scripts/make_manifest.py       DEV-only: builds manifest.json for sample cases
-├── tests/                         pytest (one test file per phase + shared helpers)
+├── scripts/                         Development scripts, including manifest and ATT&CK subset builders
+├── tests/                         pytest coverage for contracts and analysis phases
 └── security/
-    ├── main.py                    CLI entry point (full pipeline from Phase 10)
+    ├── main.py                    Evidence inventory CLI
     ├── models/schemas.py          Contract constants + output dataclasses
-    ├── utils/helpers.py           JSON loading, SHA-256, UTC timestamp parsing
+    ├── utils/                      JSON loading, SHA-256, UTC timestamp parsing
     ├── validation/                Phase 2 - evidence validator
     │   ├── validator.py           validate_case(folder) -> ValidationResult (public API)
     │   ├── loader.py              safe read: empty / BOM / UTF-8 / JSON / duplicate keys
@@ -77,34 +82,47 @@ sentinel-dfir-analysis/
     │   ├── config.py              validated, frozen configuration + JSON loading
     │   ├── report.py              ASCII text rendering
     │   └── __main__.py            python -m security.ioc
-    ├── mitre/                    Phase 7 - MITRE ATT&CK mapping
-    ├── investigation/investigator.py Phase 8
+    ├── mitre/                     Phase 7 - curated MITRE ATT&CK mapping
+    │   ├── mapper.py              Map findings to supported techniques
+    │   ├── catalog.py             Curated technique catalog
+    │   └── attack_subset.json     Local ATT&CK data subset
+    ├── investigation/             Phase 8 - full case investigation assembly
+    │   ├── investigator.py        investigate_case() -> InvestigationResult
+    │   └── __main__.py            python -m security.investigation
+    ├── storage/                   Phase 9 - local SQLite persistence service
+    │   ├── store.py               save/read/list/delete investigation results
+    │   └── __main__.py            python -m security.storage
+    ├── ai/                        Initial AI contract boundary; no model integration
+    │   ├── contract.py            AI input/output contract definitions
+    │   ├── adapter.py             InvestigationResult payload adapter
+    │   └── validation.py          Input/output structure and reference validation
     └── sample_evidence/INC-001/   Synthetic case (7 evidence files + manifest)
 ```
 
-Deliberate changes from the original layout:
+The collector is a separate project and is not represented in this tree. The sample evidence demonstrates the documented input shape; it does not verify compatibility with collector-produced evidence.
 
-| Change | Reason |
+Repository layout notes:
+
+| Area | Purpose |
 |---|---|
-| Added `validation/` | Validation is Module 1 but had no folder |
-| `sample_evidence/INC-001/` instead of loose files | One folder = one case, exactly how the collector will deliver; lets us add more cases (brute force only, normal day…) side by side |
-| Added `files.json` (optional) and `manifest.json` | Both are in the collector's deliverables; manifest enables integrity checks |
-| Added `tests/`, `docs/`, `scripts/` at project root | Keeps the `security/` package clean to drop into the backend |
+| `security/validation/` | Implements the evidence validation stage. |
+| `security/sample_evidence/INC-001/` | Synthetic case organized using the folder shape described by the evidence contract; this does not verify collector compatibility. |
+| `docs/`, `scripts/`, and `tests/` | Keep project documentation, development utilities, and automated coverage at the repository root. |
 
 ## Phase status
 
 | Phase | Deliverable | Status |
 |---|---|---|
-| 1 | Structure, contract, schemas, sample evidence | ✅ done |
-| 2 | Evidence validation | ✅ done |
-| 3 | Normalization | ✅ done |
-| 4 | Timeline reconstruction | ✅ done |
-| 5 | Detection engine | ✅ done |
-| 6 | IOC extraction | ✅ done |
-| 7 | MITRE ATT&CK mapping | ✅ implemented; see [docs/ATTACK_MAPPING.md](docs/ATTACK_MAPPING.md) |
-| 8 | Investigation engine | planned |
-| 9 | SQL/backend interface | planned |
-| 10 | Integration tests, 5 required test cases | planned |
+| 1 | Project structure, evidence contract, schemas, synthetic sample | Implemented |
+| 2 | Read only evidence and manifest validation | Implemented |
+| 3 | Evidence normalization and user context enrichment | Implemented |
+| 4 | Timeline reconstruction, summaries, and filters | Implemented |
+| 5 | Configurable rule based detection | Implemented |
+| 6 | IOC extraction from cited evidence | Implemented |
+| 7 | Curated MITRE ATT&CK mapping; see [docs/ATTACK_MAPPING.md](docs/ATTACK_MAPPING.md) | Implemented |
+| 8 | Investigation assembly, provenance reference checks, and analyst review suggestions | Implemented |
+| 9 | Local SQLite persistence service | Implemented |
+| 10 | Integration tests, including five required test cases | Planned |
 
 ## Validation (Phase 2)
 
@@ -364,7 +382,7 @@ Findings produced by Phase 5 on this case: **F-001** brute-force burst followed 
 | Custom deterministic rules (3 scenarios) | **Sigma** — load standard YAML rules into `detection/` after the custom engine works |
 | Regex + `ipaddress` IOC extraction | **STIX/TAXII** — export `IOC` objects as STIX indicators / enrich against a TAXII feed; `IOC` already has `type`+`value`+context |
 | Hand-written ATT&CK table for supported techniques | **YARA** — only if the collector delivers file contents; `files.json` today holds metadata/hashes only |
-| SQL-ready dataclasses (`to_dict()`) | ORM/DB code lives in the backend, never here |
+| Local SQLite persistence service for investigation results | A separate application backend/API, authentication, and web interface |
 
 
 ## Phase 8: Investigation Engine
@@ -386,3 +404,13 @@ python -m security.storage security/sample_evidence/INC-001 --database data/sent
 ```
 
 The storage service is an integration seam only; this repository does not implement HTTP routes, authentication, a web interface, or the separate backend project. See [`docs/PHASE9_STORAGE.md`](docs/PHASE9_STORAGE.md).
+
+## AI module status
+
+`security.ai` currently provides an initial boundary around investigation data:
+
+- `contract.py` defines the AI input and output shapes.
+- `adapter.py` converts an `InvestigationResult` into a detached, JSON-safe AI input payload.
+- `validation.py` checks input/output structure, identity continuity, and references to findings, events, IOCs, ATT&CK mappings, and evidence records.
+
+There is no AI provider or model integration, prompt/generation workflow, or AI analysis output in the current implementation. The adapter and validators do not generate an assessment.
