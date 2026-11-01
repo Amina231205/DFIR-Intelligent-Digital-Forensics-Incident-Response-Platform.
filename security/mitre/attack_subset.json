@@ -1,0 +1,417 @@
+{
+  "metadata": {
+    "dataset": "MITRE ATT&CK Enterprise",
+    "source_url": "https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack.json",
+    "source_sha256": "dc1639caa5501d720e280cf1cbd8fbe009884a0c9b3e6e9ed9d0c25166c3d8f4",
+    "retrieved_utc": "2026-10-12T22:09:13Z",
+    "generated_by": "scripts/build_attack_subset.py",
+    "attack_version": "19.2",
+    "attack_spec_version": "3.3.0",
+    "collection_modified": "2026-08-05T21:33:58.496Z",
+    "kind": "curated subset",
+    "technique_count": 23,
+    "coverage_note": "Curated subset: only the techniques referenced by mappings.json, their parent techniques and all tactics. It is NOT the full ATT&CK matrix and must not be read as coverage of it."
+  },
+  "tactics": [
+    {
+      "id": "TA0001",
+      "name": "Initial Access",
+      "shortname": "initial-access",
+      "url": "https://attack.mitre.org/tactics/TA0001"
+    },
+    {
+      "id": "TA0002",
+      "name": "Execution",
+      "shortname": "execution",
+      "url": "https://attack.mitre.org/tactics/TA0002"
+    },
+    {
+      "id": "TA0003",
+      "name": "Persistence",
+      "shortname": "persistence",
+      "url": "https://attack.mitre.org/tactics/TA0003"
+    },
+    {
+      "id": "TA0004",
+      "name": "Privilege Escalation",
+      "shortname": "privilege-escalation",
+      "url": "https://attack.mitre.org/tactics/TA0004"
+    },
+    {
+      "id": "TA0005",
+      "name": "Stealth",
+      "shortname": "stealth",
+      "url": "https://attack.mitre.org/tactics/TA0005"
+    },
+    {
+      "id": "TA0006",
+      "name": "Credential Access",
+      "shortname": "credential-access",
+      "url": "https://attack.mitre.org/tactics/TA0006"
+    },
+    {
+      "id": "TA0007",
+      "name": "Discovery",
+      "shortname": "discovery",
+      "url": "https://attack.mitre.org/tactics/TA0007"
+    },
+    {
+      "id": "TA0008",
+      "name": "Lateral Movement",
+      "shortname": "lateral-movement",
+      "url": "https://attack.mitre.org/tactics/TA0008"
+    },
+    {
+      "id": "TA0009",
+      "name": "Collection",
+      "shortname": "collection",
+      "url": "https://attack.mitre.org/tactics/TA0009"
+    },
+    {
+      "id": "TA0010",
+      "name": "Exfiltration",
+      "shortname": "exfiltration",
+      "url": "https://attack.mitre.org/tactics/TA0010"
+    },
+    {
+      "id": "TA0011",
+      "name": "Command and Control",
+      "shortname": "command-and-control",
+      "url": "https://attack.mitre.org/tactics/TA0011"
+    },
+    {
+      "id": "TA0040",
+      "name": "Impact",
+      "shortname": "impact",
+      "url": "https://attack.mitre.org/tactics/TA0040"
+    },
+    {
+      "id": "TA0042",
+      "name": "Resource Development",
+      "shortname": "resource-development",
+      "url": "https://attack.mitre.org/tactics/TA0042"
+    },
+    {
+      "id": "TA0043",
+      "name": "Reconnaissance",
+      "shortname": "reconnaissance",
+      "url": "https://attack.mitre.org/tactics/TA0043"
+    },
+    {
+      "id": "TA0112",
+      "name": "Defense Impairment",
+      "shortname": "defense-impairment",
+      "url": "https://attack.mitre.org/tactics/TA0112"
+    }
+  ],
+  "techniques": [
+    {
+      "id": "T1021",
+      "name": "Remote Services",
+      "is_subtechnique": false,
+      "parent_id": null,
+      "tactics": [
+        "TA0008"
+      ],
+      "url": "https://attack.mitre.org/techniques/T1021",
+      "version": "1.6",
+      "modified": "2025-10-24",
+      "used_by_mappings": false
+    },
+    {
+      "id": "T1021.001",
+      "name": "Remote Desktop Protocol",
+      "is_subtechnique": true,
+      "parent_id": "T1021",
+      "tactics": [
+        "TA0008"
+      ],
+      "url": "https://attack.mitre.org/techniques/T1021/001",
+      "version": "1.4",
+      "modified": "2026-05-12",
+      "used_by_mappings": false
+    },
+    {
+      "id": "T1027",
+      "name": "Obfuscated Files or Information",
+      "is_subtechnique": false,
+      "parent_id": null,
+      "tactics": [
+        "TA0005"
+      ],
+      "url": "https://attack.mitre.org/techniques/T1027",
+      "version": "2.0",
+      "modified": "2026-05-12",
+      "used_by_mappings": false
+    },
+    {
+      "id": "T1027.010",
+      "name": "Command Obfuscation",
+      "is_subtechnique": true,
+      "parent_id": "T1027",
+      "tactics": [
+        "TA0005"
+      ],
+      "url": "https://attack.mitre.org/techniques/T1027/010",
+      "version": "2.0",
+      "modified": "2026-05-12",
+      "used_by_mappings": true
+    },
+    {
+      "id": "T1059",
+      "name": "Command and Scripting Interpreter",
+      "is_subtechnique": false,
+      "parent_id": null,
+      "tactics": [
+        "TA0002"
+      ],
+      "url": "https://attack.mitre.org/techniques/T1059",
+      "version": "2.7",
+      "modified": "2026-05-12",
+      "used_by_mappings": false
+    },
+    {
+      "id": "T1059.001",
+      "name": "PowerShell",
+      "is_subtechnique": true,
+      "parent_id": "T1059",
+      "tactics": [
+        "TA0002"
+      ],
+      "url": "https://attack.mitre.org/techniques/T1059/001",
+      "version": "1.5",
+      "modified": "2026-05-12",
+      "used_by_mappings": true
+    },
+    {
+      "id": "T1059.005",
+      "name": "Visual Basic",
+      "is_subtechnique": true,
+      "parent_id": "T1059",
+      "tactics": [
+        "TA0002"
+      ],
+      "url": "https://attack.mitre.org/techniques/T1059/005",
+      "version": "1.5",
+      "modified": "2026-05-12",
+      "used_by_mappings": false
+    },
+    {
+      "id": "T1071",
+      "name": "Application Layer Protocol",
+      "is_subtechnique": false,
+      "parent_id": null,
+      "tactics": [
+        "TA0011"
+      ],
+      "url": "https://attack.mitre.org/techniques/T1071",
+      "version": "2.4",
+      "modified": "2025-10-24",
+      "used_by_mappings": false
+    },
+    {
+      "id": "T1071.001",
+      "name": "Web Protocols",
+      "is_subtechnique": true,
+      "parent_id": "T1071",
+      "tactics": [
+        "TA0011"
+      ],
+      "url": "https://attack.mitre.org/techniques/T1071/001",
+      "version": "1.5",
+      "modified": "2026-05-12",
+      "used_by_mappings": false
+    },
+    {
+      "id": "T1078",
+      "name": "Valid Accounts",
+      "is_subtechnique": false,
+      "parent_id": null,
+      "tactics": [
+        "TA0001",
+        "TA0003",
+        "TA0004",
+        "TA0005"
+      ],
+      "url": "https://attack.mitre.org/techniques/T1078",
+      "version": "3.0",
+      "modified": "2026-05-12",
+      "used_by_mappings": false
+    },
+    {
+      "id": "T1078.003",
+      "name": "Local Accounts",
+      "is_subtechnique": true,
+      "parent_id": "T1078",
+      "tactics": [
+        "TA0001",
+        "TA0003",
+        "TA0004",
+        "TA0005"
+      ],
+      "url": "https://attack.mitre.org/techniques/T1078/003",
+      "version": "2.0",
+      "modified": "2026-05-12",
+      "used_by_mappings": false
+    },
+    {
+      "id": "T1098",
+      "name": "Account Manipulation",
+      "is_subtechnique": false,
+      "parent_id": null,
+      "tactics": [
+        "TA0003",
+        "TA0004"
+      ],
+      "url": "https://attack.mitre.org/techniques/T1098",
+      "version": "2.8",
+      "modified": "2026-05-12",
+      "used_by_mappings": false
+    },
+    {
+      "id": "T1098.007",
+      "name": "Additional Local or Domain Groups",
+      "is_subtechnique": true,
+      "parent_id": "T1098",
+      "tactics": [
+        "TA0003",
+        "TA0004"
+      ],
+      "url": "https://attack.mitre.org/techniques/T1098/007",
+      "version": "1.1",
+      "modified": "2025-09-26",
+      "used_by_mappings": true
+    },
+    {
+      "id": "T1105",
+      "name": "Ingress Tool Transfer",
+      "is_subtechnique": false,
+      "parent_id": null,
+      "tactics": [
+        "TA0011"
+      ],
+      "url": "https://attack.mitre.org/techniques/T1105",
+      "version": "2.6",
+      "modified": "2026-05-12",
+      "used_by_mappings": true
+    },
+    {
+      "id": "T1110",
+      "name": "Brute Force",
+      "is_subtechnique": false,
+      "parent_id": null,
+      "tactics": [
+        "TA0006"
+      ],
+      "url": "https://attack.mitre.org/techniques/T1110",
+      "version": "2.8",
+      "modified": "2026-05-12",
+      "used_by_mappings": true
+    },
+    {
+      "id": "T1110.001",
+      "name": "Password Guessing",
+      "is_subtechnique": true,
+      "parent_id": "T1110",
+      "tactics": [
+        "TA0006"
+      ],
+      "url": "https://attack.mitre.org/techniques/T1110/001",
+      "version": "1.7",
+      "modified": "2026-05-12",
+      "used_by_mappings": true
+    },
+    {
+      "id": "T1110.003",
+      "name": "Password Spraying",
+      "is_subtechnique": true,
+      "parent_id": "T1110",
+      "tactics": [
+        "TA0006"
+      ],
+      "url": "https://attack.mitre.org/techniques/T1110/003",
+      "version": "1.8",
+      "modified": "2025-10-24",
+      "used_by_mappings": false
+    },
+    {
+      "id": "T1133",
+      "name": "External Remote Services",
+      "is_subtechnique": false,
+      "parent_id": null,
+      "tactics": [
+        "TA0001",
+        "TA0003"
+      ],
+      "url": "https://attack.mitre.org/techniques/T1133",
+      "version": "2.5",
+      "modified": "2026-05-12",
+      "used_by_mappings": false
+    },
+    {
+      "id": "T1136",
+      "name": "Create Account",
+      "is_subtechnique": false,
+      "parent_id": null,
+      "tactics": [
+        "TA0003"
+      ],
+      "url": "https://attack.mitre.org/techniques/T1136",
+      "version": "2.6",
+      "modified": "2025-10-24",
+      "used_by_mappings": true
+    },
+    {
+      "id": "T1136.001",
+      "name": "Local Account",
+      "is_subtechnique": true,
+      "parent_id": "T1136",
+      "tactics": [
+        "TA0003"
+      ],
+      "url": "https://attack.mitre.org/techniques/T1136/001",
+      "version": "1.5",
+      "modified": "2026-05-12",
+      "used_by_mappings": true
+    },
+    {
+      "id": "T1140",
+      "name": "Deobfuscate/Decode Files or Information",
+      "is_subtechnique": false,
+      "parent_id": null,
+      "tactics": [
+        "TA0005"
+      ],
+      "url": "https://attack.mitre.org/techniques/T1140",
+      "version": "2.0",
+      "modified": "2026-05-12",
+      "used_by_mappings": false
+    },
+    {
+      "id": "T1204",
+      "name": "User Execution",
+      "is_subtechnique": false,
+      "parent_id": null,
+      "tactics": [
+        "TA0002"
+      ],
+      "url": "https://attack.mitre.org/techniques/T1204",
+      "version": "1.8",
+      "modified": "2025-10-24",
+      "used_by_mappings": false
+    },
+    {
+      "id": "T1204.002",
+      "name": "Malicious File",
+      "is_subtechnique": true,
+      "parent_id": "T1204",
+      "tactics": [
+        "TA0002"
+      ],
+      "url": "https://attack.mitre.org/techniques/T1204/002",
+      "version": "1.6",
+      "modified": "2026-05-12",
+      "used_by_mappings": false
+    }
+  ]
+}

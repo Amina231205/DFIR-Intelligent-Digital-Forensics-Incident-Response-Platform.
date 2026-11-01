@@ -1,0 +1,227 @@
+{
+  "mapping_definition": {
+    "version": "1.0",
+    "reviewed_against": "MITRE ATT&CK Enterprise v19.2",
+    "description": "Declarative mapping of Sentinel DFIR detection findings to ATT&CK techniques. Each rule maps ONE technique (or sub-technique) to ONE tactic for findings of ONE detection rule, only when its conditions hold on the finding's recorded evidence. Edit this file to change mappings; the engine does not change."
+  },
+  "confidence_scale": {
+    "High": "Every condition is met AND the mapping's own corroboration condition (documented per mapping) is also met AND the source finding's confidence is High.",
+    "Medium": "Every condition is met but the corroboration condition is not (or cannot be evaluated), or the source finding's confidence is Medium.",
+    "Low": "Every condition is met but the source finding's confidence is Low."
+  },
+  "rules": [
+    {
+      "id": "DET001-T1110.001",
+      "rule_id": "DET-001",
+      "technique_id": "T1110.001",
+      "tactic_id": "TA0006",
+      "tactic_reason": "Guessing passwords is a way of obtaining credentials.",
+      "conditions": {
+        "all": [
+          {"check": "context_number_at_least", "path": "failure_count", "value": 1},
+          {"check": "context_at_least_multiple", "path": "failure_count", "of": "threshold", "factor": 1},
+          {"check": "context_share_at_least", "path": "failure_reasons", "key": "wrong password", "min_share": 0.8}
+        ]
+      },
+      "evidence": [{"events_from": "finding", "except_context": ["successful_logon_event_id"]}],
+      "iocs": {"types": ["ip", "username"]},
+      "confidence": {
+        "base": "Medium",
+        "raised": "High",
+        "raise_when": {"check": "context_at_least_multiple", "path": "failure_count", "of": "threshold", "factor": 2},
+        "raise_reason": "the failure count is at least twice the detection threshold"
+      },
+      "rationale": "{ctx.failure_count} failed logons for account '{ctx.grouping.target_account}' from {ctx.grouping.source_ip} within {ctx.window_seconds} s (threshold {ctx.threshold}); the recorded failure reasons ({ctx.failure_reasons}) are wrong-password failures, which is consistent with password guessing against one account.",
+      "limitations": "Repeated wrong-password failures also occur when a user or service retries stale credentials; the evidence does not show who or what produced them."
+    },
+    {
+      "id": "DET001-T1110",
+      "rule_id": "DET-001",
+      "technique_id": "T1110",
+      "tactic_id": "TA0006",
+      "tactic_reason": "Brute force is a way of obtaining credentials.",
+      "conditions": {
+        "all": [
+          {"check": "context_at_least_multiple", "path": "failure_count", "of": "threshold", "factor": 1},
+          {"any": [
+            {"check": "context_missing", "path": "failure_reasons"},
+            {"not": {"check": "context_share_at_least", "path": "failure_reasons", "key": "wrong password", "min_share": 0.8}}
+          ]}
+        ]
+      },
+      "evidence": [{"events_from": "finding", "except_context": ["successful_logon_event_id"]}],
+      "iocs": {"types": ["ip", "username"]},
+      "confidence": {
+        "base": "Medium",
+        "raised": "High",
+        "raise_when": {"check": "context_at_least_multiple", "path": "failure_count", "of": "threshold", "factor": 2},
+        "raise_reason": "the failure count is at least twice the detection threshold"
+      },
+      "rationale": "{ctx.failure_count} failed logons for account '{ctx.grouping.target_account}' from {ctx.grouping.source_ip} within {ctx.window_seconds} s (threshold {ctx.threshold}); the recorded failure reasons ({ctx.failure_reasons}) do not show password guessing specifically, so only the parent technique is mapped, consistent with brute force.",
+      "limitations": "Without wrong-password failure reasons the evidence cannot distinguish password guessing from other repeated-failure causes; no sub-technique is claimed."
+    },
+    {
+      "id": "DET002-T1059.001",
+      "rule_id": "DET-002",
+      "technique_id": "T1059.001",
+      "tactic_id": "TA0002",
+      "tactic_reason": "PowerShell is used here to run commands and scripts.",
+      "conditions": {
+        "any": [
+          {"check": "context_not_null", "path": "process.process_event_id"},
+          {"check": "context_number_at_least", "path": "powershell_records_in_context", "value": 1}
+        ]
+      },
+      "evidence": [
+        {"events_from": "context_value", "path": "process.process_event_id"},
+        {"events_from": "context_records", "path": "correlated_records", "key": "event_id", "where": {"link": "powershell_record"}}
+      ],
+      "iocs": {"types": ["filename"]},
+      "confidence": {
+        "base": "Medium",
+        "raised": "High",
+        "raise_when": {
+          "all": [
+            {"check": "context_not_null", "path": "process.process_event_id"},
+            {"check": "context_number_at_least", "path": "powershell_records_in_context", "value": 1}
+          ]
+        },
+        "raise_reason": "both a process record and PowerShell script-block records show the execution"
+      },
+      "rationale": "PowerShell execution is recorded for PID {ctx.process.pid} on {finding.device} (user {finding.user}); the finding matched {indicators}. Consistent with PowerShell used for execution.",
+      "limitations": "The record shows PowerShell ran, not who intended it or why; administrators use PowerShell routinely."
+    },
+    {
+      "id": "DET002-T1027.010",
+      "rule_id": "DET-002",
+      "technique_id": "T1027.010",
+      "tactic_id": "TA0005",
+      "tactic_reason": "Obfuscating a command impedes detection and analysis.",
+      "conditions": {"check": "indicator_present", "indicator": "encoded_command"},
+      "evidence": [{"events_from": "indicator", "indicator": "encoded_command"}],
+      "iocs": {"types": []},
+      "confidence": {
+        "base": "Medium",
+        "raised": "High",
+        "raise_when": {"check": "indicator_in_decoded_text"},
+        "raise_reason": "the decoded command text itself matched further indicators"
+      },
+      "rationale": "The PowerShell command line for PID {ctx.process.pid} carries a Base64 -EncodedCommand argument; ATT&CK lists Base64-encoded commands under command obfuscation. Consistent with an obfuscated command (finding matched {indicators}).",
+      "limitations": "Legitimate management tools also pass Base64-encoded commands; encoding alone does not show intent to evade."
+    },
+    {
+      "id": "DET002-T1105",
+      "rule_id": "DET-002",
+      "technique_id": "T1105",
+      "tactic_id": "TA0011",
+      "tactic_reason": "Bringing a file in from an external system is part of the command-and-control phase.",
+      "conditions": {
+        "all": [
+          {"check": "indicator_present", "indicator": "download_cradle"},
+          {"check": "ioc_related", "type": "url"}
+        ]
+      },
+      "evidence": [{"events_from": "indicator", "indicator": "download_cradle"}],
+      "iocs": {"types": ["url", "domain", "hash"]},
+      "confidence": {
+        "base": "Medium",
+        "raised": "High",
+        "raise_when": {"check": "ioc_related", "type": "hash", "evidence_file": "files.json"},
+        "raise_reason": "a file record (files.json) shows a file was created at the path the script uses"
+      },
+      "rationale": "Script text for PID {ctx.process.pid} uses a download function and the finding's evidence includes a remote URL. Consistent with transferring a file from an external system into the host.",
+      "limitations": "A download function can also fetch ordinary content; without a created file the transfer of a tool is inferred, not shown."
+    },
+    {
+      "id": "DET003-T1136.001",
+      "rule_id": "DET-003",
+      "technique_id": "T1136.001",
+      "tactic_id": "TA0003",
+      "tactic_reason": "A created account can be used to keep access to the system.",
+      "conditions": {
+        "all": [
+          {"check": "context_not_null", "path": "creation_event_id"},
+          {"check": "context_list_nonempty", "path": "context_indicators_matched"},
+          {"check": "context_equals_finding_field", "path": "target_domain", "field": "device", "casefold": true}
+        ]
+      },
+      "evidence": [
+        {"events_from": "context_value", "path": "creation_event_id"},
+        {"events_from": "context_records", "path": "creating_evidence", "key": "event_id"}
+      ],
+      "iocs": {"types": ["username"], "role_contains": "account that was created"},
+      "confidence": {
+        "base": "Medium",
+        "raised": "High",
+        "raise_when": {"check": "context_list_nonempty", "path": "creating_evidence"},
+        "raise_reason": "a process or script record shows the creation command naming the new account"
+      },
+      "rationale": "Event 4720 shows '{ctx.actor}' created account '{ctx.target_account}' on {finding.device}; the account's domain ({ctx.target_domain}) equals the device name, so it is a local account, and surrounding activity matched ({ctx.context_indicators_matched}). Consistent with creating a local account.",
+      "limitations": "Administrators create accounts routinely; the mapping rests on the surrounding suspicious activity the detection required, not on the creation alone."
+    },
+    {
+      "id": "DET003-T1136",
+      "rule_id": "DET-003",
+      "technique_id": "T1136",
+      "tactic_id": "TA0003",
+      "tactic_reason": "A created account can be used to keep access to the system.",
+      "conditions": {
+        "all": [
+          {"check": "context_not_null", "path": "creation_event_id"},
+          {"check": "context_list_nonempty", "path": "context_indicators_matched"},
+          {"any": [
+            {"check": "context_missing", "path": "target_domain"},
+            {"not": {"check": "context_equals_finding_field", "path": "target_domain", "field": "device", "casefold": true}}
+          ]}
+        ]
+      },
+      "evidence": [
+        {"events_from": "context_value", "path": "creation_event_id"},
+        {"events_from": "context_records", "path": "creating_evidence", "key": "event_id"}
+      ],
+      "iocs": {"types": ["username"], "role_contains": "account that was created"},
+      "confidence": {
+        "base": "Medium",
+        "raised": "High",
+        "raise_when": {"check": "context_list_nonempty", "path": "creating_evidence"},
+        "raise_reason": "a process or script record shows the creation command naming the new account"
+      },
+      "rationale": "Event 4720 shows '{ctx.actor}' created account '{ctx.target_account}' on {finding.device}; surrounding activity matched ({ctx.context_indicators_matched}). The evidence does not show whether the account is local or domain, so only the parent technique is mapped.",
+      "limitations": "Without evidence that the account is local, no sub-technique is claimed."
+    },
+    {
+      "id": "DET003-T1098.007",
+      "rule_id": "DET-003",
+      "technique_id": "T1098.007",
+      "tactic_id": "TA0004",
+      "tactic_reason": "Membership in a privileged local group raises the account's privileges (ATT&CK also lists Persistence for this technique).",
+      "conditions": {
+        "all": [
+          {"check": "indicator_present", "indicator": "privileged_target", "where": {"basis": "group_membership_event"}},
+          {"check": "context_list_nonempty", "path": "context_indicators_matched"}
+        ]
+      },
+      "evidence": [{"events_from": "indicator", "indicator": "privileged_target", "where": {"basis": "group_membership_event"}}],
+      "iocs": {"types": ["username"], "role_contains": "added to group"},
+      "confidence": {
+        "base": "Medium",
+        "raised": "High",
+        "raise_when": {"check": "indicator_present", "indicator": "privileged_target", "where": {"basis": "users_snapshot"}},
+        "raise_reason": "the users.json snapshot independently lists the account as an administrator"
+      },
+      "rationale": "Event 4732 shows account '{ctx.target_account}' added to a privileged group after it was created by '{ctx.actor}', with surrounding activity ({ctx.context_indicators_matched}). Consistent with adding an account to additional local groups.",
+      "limitations": "Adding users to Administrators is also routine administration; the mapping rests on the surrounding suspicious activity the detection required."
+    }
+  ],
+  "not_mapped": [
+    {"technique_id": "T1110.003", "reason": "DET-001 groups failures per account; password spraying (one password against many accounts) would need failures across accounts from one source, which no implemented rule evaluates."},
+    {"technique_id": "T1078", "reason": "A successful logon shows the credentials were valid, not that an adversary used them. Valid Accounts spans four tactics and the evidence cannot choose one."},
+    {"technique_id": "T1078.003", "reason": "Same as T1078: a successful logon to a local account does not show adversary use, and the tactic cannot be chosen from the evidence."},
+    {"technique_id": "T1021.001", "reason": "Logon type 10 shows a Remote Desktop session, but lateral movement cannot be told apart from initial access; no rule establishes that the source was an internal system."},
+    {"technique_id": "T1133", "reason": "Needs evidence that the service is exposed and the source is external; under the default IP policy documentation-range sources are not external and no rule evaluates exposure."},
+    {"technique_id": "T1059.005", "reason": "wscript.exe appears only as the parent of PowerShell (unusual_parent) or as context in DET-003's process chain; no rule's conditions assert VBScript execution."},
+    {"technique_id": "T1204.002", "reason": "No rule establishes that a user opened a file."},
+    {"technique_id": "T1071.001", "reason": "A connection on a web port by PowerShell does not show command-and-control traffic."},
+    {"technique_id": "T1140", "reason": "Decoding is done by this project's analysis; the evidence does not record the adversary decoding anything."}
+  ]
+}

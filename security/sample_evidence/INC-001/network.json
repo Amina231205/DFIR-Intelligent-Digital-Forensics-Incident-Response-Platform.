@@ -1,0 +1,88 @@
+{
+  "schema_version": "1.0",
+  "case_id": "INC-001",
+  "device": "WIN-PC-01",
+  "source": "network",
+  "collected_at": "2026-10-08T08:10:00Z",
+  "collector": {
+    "name": "sentinel-windows-collector",
+    "version": "0.1.0-sample"
+  },
+  "records": [
+    {
+      "record_id": "NET-0001",
+      "timestamp": "2026-10-08T07:02:44Z",
+      "protocol": "TCP",
+      "local_address": "10.20.0.15",
+      "local_port": 50112,
+      "remote_address": "192.0.2.44",
+      "remote_port": 443,
+      "direction": "outbound",
+      "state": "ESTABLISHED",
+      "pid": 5304,
+      "process_name": "chrome.exe",
+      "remote_hostname": "mail.example.org",
+      "origin": "event_log"
+    },
+    {
+      "record_id": "NET-0002",
+      "timestamp": "2026-10-08T07:31:00Z",
+      "protocol": "TCP",
+      "local_address": "10.20.0.15",
+      "local_port": 3389,
+      "remote_address": "198.51.100.23",
+      "remote_port": 51790,
+      "direction": "inbound",
+      "state": "ESTABLISHED",
+      "pid": 1180,
+      "process_name": "svchost.exe",
+      "remote_hostname": null,
+      "origin": "event_log"
+    },
+    {
+      "record_id": "NET-0003",
+      "timestamp": "2026-10-08T07:32:38Z",
+      "protocol": "TCP",
+      "local_address": "10.20.0.15",
+      "local_port": 3389,
+      "remote_address": "198.51.100.23",
+      "remote_port": 51842,
+      "direction": "inbound",
+      "state": "ESTABLISHED",
+      "pid": 1180,
+      "process_name": "svchost.exe",
+      "remote_hostname": null,
+      "origin": "event_log"
+    },
+    {
+      "record_id": "NET-0004",
+      "timestamp": "2026-10-08T07:34:12Z",
+      "protocol": "TCP",
+      "local_address": "10.20.0.15",
+      "local_port": 49822,
+      "remote_address": "203.0.113.77",
+      "remote_port": 443,
+      "direction": "outbound",
+      "state": "ESTABLISHED",
+      "pid": 6012,
+      "process_name": "powershell.exe",
+      "remote_hostname": "files-sync.example.net",
+      "origin": "event_log"
+    },
+    {
+      "record_id": "NET-0005",
+      "timestamp": "2026-10-08T07:34:50Z",
+      "protocol": "TCP",
+      "local_address": "10.20.0.15",
+      "local_port": 49871,
+      "remote_address": "203.0.113.77",
+      "remote_port": 8443,
+      "direction": "outbound",
+      "state": "ESTABLISHED",
+      "pid": 6188,
+      "process_name": "powershell.exe",
+      "remote_hostname": "files-sync.example.net",
+      "origin": "event_log"
+    }
+  ]
+}

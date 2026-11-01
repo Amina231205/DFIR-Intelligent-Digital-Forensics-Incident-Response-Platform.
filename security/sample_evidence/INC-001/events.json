@@ -1,0 +1,217 @@
+{
+  "schema_version": "1.0",
+  "case_id": "INC-001",
+  "device": "WIN-PC-01",
+  "source": "events",
+  "collected_at": "2026-10-08T08:10:00Z",
+  "collector": {
+    "name": "sentinel-windows-collector",
+    "version": "0.1.0-sample"
+  },
+  "records": [
+    {
+      "record_id": "EVL-0001",
+      "timestamp": "2026-10-08T06:54:58Z",
+      "event_id": 4625,
+      "channel": "Security",
+      "provider": "Microsoft-Windows-Security-Auditing",
+      "record_number": 48210,
+      "keywords": "Audit Failure",
+      "data": {
+        "TargetUserName": "ahmed",
+        "TargetDomainName": "WIN-PC-01",
+        "LogonType": "2",
+        "IpAddress": "-",
+        "Status": "0xC000006D",
+        "SubStatus": "0xC000006A"
+      }
+    },
+    {
+      "record_id": "EVL-0002",
+      "timestamp": "2026-10-08T06:55:12Z",
+      "event_id": 4624,
+      "channel": "Security",
+      "provider": "Microsoft-Windows-Security-Auditing",
+      "record_number": 48211,
+      "keywords": "Audit Success",
+      "data": {
+        "TargetUserName": "ahmed",
+        "TargetDomainName": "WIN-PC-01",
+        "LogonType": "2",
+        "IpAddress": "-",
+        "LogonProcessName": "User32",
+        "AuthenticationPackageName": "Negotiate"
+      }
+    },
+    {
+      "record_id": "EVL-0003",
+      "timestamp": "2026-10-08T07:15:02Z",
+      "event_id": 4624,
+      "channel": "Security",
+      "provider": "Microsoft-Windows-Security-Auditing",
+      "record_number": 48212,
+      "keywords": "Audit Success",
+      "data": {
+        "TargetUserName": "svc_backup",
+        "TargetDomainName": "WIN-PC-01",
+        "LogonType": "5",
+        "IpAddress": "-",
+        "LogonProcessName": "Advapi",
+        "AuthenticationPackageName": "Negotiate"
+      }
+    },
+    {
+      "record_id": "EVL-0004",
+      "timestamp": "2026-10-08T07:31:02Z",
+      "event_id": 4625,
+      "channel": "Security",
+      "provider": "Microsoft-Windows-Security-Auditing",
+      "record_number": 48213,
+      "keywords": "Audit Failure",
+      "data": {
+        "TargetUserName": "ahmed",
+        "TargetDomainName": "WIN-PC-01",
+        "LogonType": "10",
+        "IpAddress": "198.51.100.23",
+        "Status": "0xC000006D",
+        "SubStatus": "0xC000006A"
+      }
+    },
+    {
+      "record_id": "EVL-0005",
+      "timestamp": "2026-10-08T07:31:15Z",
+      "event_id": 4625,
+      "channel": "Security",
+      "provider": "Microsoft-Windows-Security-Auditing",
+      "record_number": 48214,
+      "keywords": "Audit Failure",
+      "data": {
+        "TargetUserName": "ahmed",
+        "TargetDomainName": "WIN-PC-01",
+        "LogonType": "10",
+        "IpAddress": "198.51.100.23",
+        "Status": "0xC000006D",
+        "SubStatus": "0xC000006A"
+      }
+    },
+    {
+      "record_id": "EVL-0006",
+      "timestamp": "2026-10-08T07:31:28Z",
+      "event_id": 4625,
+      "channel": "Security",
+      "provider": "Microsoft-Windows-Security-Auditing",
+      "record_number": 48215,
+      "keywords": "Audit Failure",
+      "data": {
+        "TargetUserName": "ahmed",
+        "TargetDomainName": "WIN-PC-01",
+        "LogonType": "10",
+        "IpAddress": "198.51.100.23",
+        "Status": "0xC000006D",
+        "SubStatus": "0xC000006A"
+      }
+    },
+    {
+      "record_id": "EVL-0007",
+      "timestamp": "2026-10-08T07:31:41Z",
+      "event_id": 4625,
+      "channel": "Security",
+      "provider": "Microsoft-Windows-Security-Auditing",
+      "record_number": 48216,
+      "keywords": "Audit Failure",
+      "data": {
+        "TargetUserName": "ahmed",
+        "TargetDomainName": "WIN-PC-01",
+        "LogonType": "10",
+        "IpAddress": "198.51.100.23",
+        "Status": "0xC000006D",
+        "SubStatus": "0xC000006A"
+      }
+    },
+    {
+      "record_id": "EVL-0008",
+      "timestamp": "2026-10-08T07:31:55Z",
+      "event_id": 4625,
+      "channel": "Security",
+      "provider": "Microsoft-Windows-Security-Auditing",
+      "record_number": 48217,
+      "keywords": "Audit Failure",
+      "data": {
+        "TargetUserName": "ahmed",
+        "TargetDomainName": "WIN-PC-01",
+        "LogonType": "10",
+        "IpAddress": "198.51.100.23",
+        "Status": "0xC000006D",
+        "SubStatus": "0xC000006A"
+      }
+    },
+    {
+      "record_id": "EVL-0009",
+      "timestamp": "2026-10-08T07:32:08Z",
+      "event_id": 4625,
+      "channel": "Security",
+      "provider": "Microsoft-Windows-Security-Auditing",
+      "record_number": 48218,
+      "keywords": "Audit Failure",
+      "data": {
+        "TargetUserName": "ahmed",
+        "TargetDomainName": "WIN-PC-01",
+        "LogonType": "10",
+        "IpAddress": "198.51.100.23",
+        "Status": "0xC000006D",
+        "SubStatus": "0xC000006A"
+      }
+    },
+    {
+      "record_id": "EVL-0010",
+      "timestamp": "2026-10-08T07:32:40Z",
+      "event_id": 4624,
+      "channel": "Security",
+      "provider": "Microsoft-Windows-Security-Auditing",
+      "record_number": 48219,
+      "keywords": "Audit Success",
+      "data": {
+        "TargetUserName": "ahmed",
+        "TargetDomainName": "WIN-PC-01",
+        "LogonType": "10",
+        "IpAddress": "198.51.100.23",
+        "LogonProcessName": "User32",
+        "AuthenticationPackageName": "Negotiate"
+      }
+    },
+    {
+      "record_id": "EVL-0011",
+      "timestamp": "2026-10-08T07:35:22Z",
+      "event_id": 4720,
+      "channel": "Security",
+      "provider": "Microsoft-Windows-Security-Auditing",
+      "record_number": 48220,
+      "keywords": "Audit Success",
+      "data": {
+        "TargetUserName": "svc_helpdesk",
+        "TargetDomainName": "WIN-PC-01",
+        "TargetSid": "S-1-5-21-1000000001-2000000002-3000000003-1004",
+        "SamAccountName": "svc_helpdesk",
+        "SubjectUserName": "ahmed",
+        "SubjectDomainName": "WIN-PC-01"
+      }
+    },
+    {
+      "record_id": "EVL-0012",
+      "timestamp": "2026-10-08T07:35:31Z",
+      "event_id": 4732,
+      "channel": "Security",
+      "provider": "Microsoft-Windows-Security-Auditing",
+      "record_number": 48221,
+      "keywords": "Audit Success",
+      "data": {
+        "MemberName": "WIN-PC-01\\svc_helpdesk",
+        "MemberSid": "S-1-5-21-1000000001-2000000002-3000000003-1004",
+        "TargetUserName": "Administrators",
+        "TargetDomainName": "Builtin",
+        "SubjectUserName": "ahmed",
+        "SubjectDomainName": "WIN-PC-01"
+      }
+    }
+  ]
+}

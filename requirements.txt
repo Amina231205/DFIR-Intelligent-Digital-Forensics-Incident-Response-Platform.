@@ -1,0 +1,4 @@
+# Phase 1 needs only the standard library + pytest.
+# pandas is added in Phase 3 ONLY if normalization genuinely benefits from it.
+# fastapi / pydantic belong to the backend project, not to this module.
+pytest>=7.0

@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0",
+  "case_id": "INC-001",
+  "device": "WIN-PC-01",
+  "source": "files",
+  "collected_at": "2026-10-08T08:10:00Z",
+  "collector": {
+    "name": "sentinel-windows-collector",
+    "version": "0.1.0-sample"
+  },
+  "records": [
+    {
+      "record_id": "FILE-0001",
+      "timestamp": "2026-10-08T07:15:04Z",
+      "path": "C:\\IT\\Reports\\disk-report.csv",
+      "name": "disk-report.csv",
+      "size_bytes": 482,
+      "sha256": "493e79a4d12d0a1558d2f062ca0d7bb59ddcfe796009e6a54801b93ce33894a4",
+      "modified_at": "2026-10-08T07:15:04Z",
+      "owner": "svc_backup"
+    },
+    {
+      "record_id": "FILE-0002",
+      "timestamp": "2026-10-08T07:33:30Z",
+      "path": "C:\\Users\\ahmed\\Downloads\\invoice_update.vbs",
+      "name": "invoice_update.vbs",
+      "size_bytes": 912,
+      "sha256": "c8e2fe830a159ef1e219bde803ea689837bce62d5224f90c5531d0d9ae2c2535",
+      "modified_at": "2026-10-08T07:33:30Z",
+      "owner": "ahmed"
+    },
+    {
+      "record_id": "FILE-0003",
+      "timestamp": "2026-10-08T07:34:09Z",
+      "path": "C:\\Users\\Public\\update_svc.ps1",
+      "name": "update_svc.ps1",
+      "size_bytes": 164,
+      "sha256": "dc2b08f6eff0cd3255c996ab6f9ff4f922504bc447eb252cfb03c9e451649a84",
+      "modified_at": "2026-10-08T07:34:09Z",
+      "owner": "ahmed"
+    }
+  ]
+}
