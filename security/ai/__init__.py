@@ -1,10 +1,7 @@
-"""AI contract boundary for Sentinel DFIR.
-
-This package defines input adaptation and output validation only. It does not
-call an AI provider or modify Security investigation results.
-"""
+"""Contract and privacy boundary for future AI-assisted investigation."""
 
 from security.ai.adapter import adapt_investigation
+from security.ai.contract import AIAnalysis, AIInput, AIOutput
 from security.ai.validation import (
     AIContractValidationError,
     validate_ai_input,
@@ -12,7 +9,10 @@ from security.ai.validation import (
 )
 
 __all__ = [
+    "AIAnalysis",
     "AIContractValidationError",
+    "AIInput",
+    "AIOutput",
     "adapt_investigation",
     "validate_ai_input",
     "validate_ai_output",

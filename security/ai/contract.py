@@ -1,45 +1,23 @@
-"""Names and typing contracts for the isolated Sentinel AI boundary."""
+"""Typed contracts for minimized AI context and separate AI analysis output."""
 
 from __future__ import annotations
 
 from typing import Literal, TypedDict
 
-AI_CONTRACT_VERSION = "1.0"
+AI_CONTRACT_VERSION = "2.0"
 AI_CONFIDENCE_LEVELS = ("low", "medium", "high")
-NEUTRAL_EMPTY_SUMMARY = "The available InvestigationResult did not support a grounded AI assessment."
+AI_BASE_LIMITATIONS = (
+    "Source recorded facts describe supplied evidence and are not proof of malicious activity.",
+    "AI-authored claims are unverified interpretations and require analyst review.",
+)
 
 
-class SecurityInput(TypedDict, total=False):
-    """Serialized Security InvestigationResult fields.
-
-    The fields mirror security.models.schemas.InvestigationResult. Collection
-    fields are optional here so older/partial serialized payloads can be read
-    as empty collections by the adapter and validator.
-    """
-
-    incident_id: str
-    device: str
-    generated_at: str
-    schema_version: str
-    time_start: str | None
-    time_end: str | None
-    users_involved: list[str]
-    evidence_files: list[dict[str, object]]
-    timeline: list[dict[str, object]]
-    findings: list[dict[str, object]]
-    iocs: list[dict[str, object]]
-    mitre_mappings: list[dict[str, object]]
-    summary: str
-    finding_assessments: list[dict[str, object]]
-    finding_links: list[dict[str, object]]
-    data_gaps: list[str]
-    provenance_check: dict[str, object]
-    evidence_integrity: list[dict[str, object]]
-
-
-class AIInput(TypedDict):
-    contract_version: str
-    security_result: SecurityInput
+class EvidenceReference(TypedDict, total=False):
+    evidence_id: str
+    evidence_file: str
+    related_finding_ids: list[str]
+    related_event_ids: list[str]
+    related_ioc_ids: list[str]
 
 
 class SupportingEvidence(TypedDict):
@@ -47,7 +25,7 @@ class SupportingEvidence(TypedDict):
     event_ids: list[str]
     ioc_ids: list[str]
     attack_ids: list[str]
-    evidence_refs: list[dict[str, object]]
+    evidence_refs: list[EvidenceReference]
 
 
 class AIConfidence(TypedDict):
@@ -55,29 +33,107 @@ class AIConfidence(TypedDict):
     justification: str
 
 
-class AIHypothesis(TypedDict):
-    hypothesis_id: str
+class AIEvent(TypedDict):
+    event_id: str
+    sequence: int
+    event_type: str
+    actor_ref: str | None
+    evidence_id: str
+    evidence_file: str
+
+
+class AIFinding(TypedDict):
+    finding_id: str
+    rule_id: str
+    severity: str
+    confidence: str
+    supporting_events: list[str]
+    evidence_sources: list[str]
+    ioc_ids: list[str]
+    attack_ids: list[str]
+
+
+class AIIoc(TypedDict):
+    ioc_id: str
+    type: str
+    related_findings: list[str]
+    evidence_refs: list[EvidenceReference]
+
+
+class AIMapping(TypedDict):
+    mapping_id: str
+    technique_id: str
+    related_findings: list[str]
+    supporting_events: list[str]
+    evidence_sources: list[str]
+    ioc_ids: list[str]
+
+
+class AIFact(TypedDict):
+    fact_id: str
     statement: str
+    verification_status: Literal["source_recorded"]
     supporting_evidence: SupportingEvidence
-    confidence: AIConfidence
+
+
+class AIInput(TypedDict):
+    """Allowlisted analysis context; intentionally excludes raw evidence text."""
+
+    contract_version: str
+    incident_ref: str
+    source_schema_version: str
+    device_ref: str
+    timeline: list[AIEvent]
+    findings: list[AIFinding]
+    iocs: list[AIIoc]
+    mitre_mappings: list[AIMapping]
+    fact_catalog: list[AIFact]
 
 
 class AIObservation(TypedDict):
     observation_id: str
     statement: str
+    verification_status: Literal["unverified"]
+    confidence: AIConfidence
     supporting_evidence: SupportingEvidence
 
 
-class AIAnalysis(TypedDict):
-    """AI-authored analysis kept separate from Security findings."""
+class AIHypothesis(TypedDict):
+    hypothesis_id: str
+    statement: str
+    verification_status: Literal["unverified"]
+    confidence: AIConfidence
+    supporting_evidence: SupportingEvidence
+
+
+class AIRecommendation(TypedDict):
+    recommendation_id: str
+    action: str
+    classification: Literal["suggestion"]
+    status: Literal["analyst_review"]
+    supporting_evidence: SupportingEvidence
+
+
+class AIOutput(TypedDict):
+    """Untrusted v2 response before application-generated facts are materialized."""
 
     contract_version: str
-    incident_id: str
+    incident_ref: str
     source_schema_version: str
-    executive_summary: str
-    executive_summary_basis: dict[str, list[str]]
+    confirmed_fact_ids: list[str]
     observations: list[AIObservation]
     hypotheses: list[AIHypothesis]
-    limitations: list[str]
-    recommended_next_steps: list[str]
+    recommendations: list[AIRecommendation]
 
+
+class AIAnalysis(TypedDict):
+    """Validated AI result kept separate from deterministic investigation data."""
+
+    contract_version: str
+    incident_ref: str
+    source_schema_version: str
+    confirmed_facts: list[AIFact]
+    observations: list[AIObservation]
+    hypotheses: list[AIHypothesis]
+    recommendations: list[AIRecommendation]
+    limitations: list[str]
