@@ -393,6 +393,16 @@ The investigation engine assembles validation, normalization, timeline, detectio
 python -m security.investigation security/sample_evidence/INC-001 --output investigation.json
 ```
 
+For an optional local AI demonstration, select the mock provider explicitly:
+
+```bash
+python -m security.investigation security/sample_evidence/INC-001 --ai-provider mock
+```
+
+The deterministic investigation JSON keeps its existing format on stdout (or
+in the `--output` file). The separate AI report is written to stderr and is
+labeled `MOCK/DEMO — NOT REAL LLM ANALYSIS`.
+
 See [`docs/PHASE8_INVESTIGATION.md`](docs/PHASE8_INVESTIGATION.md).
 
 ## Phase 9: SQLite persistence
@@ -407,10 +417,14 @@ The storage service is an integration seam only; this repository does not implem
 
 ## AI module status
 
-`security.ai` currently provides an initial boundary around investigation data:
+`security.ai` provides a privacy-filtered, reference-validated boundary around
+deterministic investigation results. Its synchronous service currently supports
+the local deterministic Mock Provider only. The mock selects application-built
+confirmed facts and returns no model-authored observations, hypotheses, or
+recommendations.
 
-- `contract.py` defines the AI input and output shapes.
-- `adapter.py` converts an `InvestigationResult` into a detached, JSON-safe AI input payload.
-- `validation.py` checks input/output structure, identity continuity, and references to findings, events, IOCs, ATT&CK mappings, and evidence records.
-
-There is no AI provider or model integration, prompt/generation workflow, or AI analysis output in the current implementation. The adapter and validators do not generate an assessment.
+Use `--ai-provider mock` to print the separate report on stderr. Its heading is
+`MOCK/DEMO — NOT REAL LLM ANALYSIS`. Existing deterministic JSON output is unchanged.
+There is no real LLM integration, network access, API-key handling, AI-result
+database persistence, or frontend integration. AI results do not change the
+authoritative `InvestigationResult`.
